@@ -1,8 +1,20 @@
-# Example Usage
+# Example Usages
+### Get help
 ~~~bash
-python main.py [--username EricRosen] [--since 2026-01-01]
 python main.py --help
 ~~~
+
+### Use settings in config.yaml
+~~~bash
+python main.py
+~~~
+
+### Find repeat blunders for EricRosen since Jan 1, 2026
+~~~bash
+python main.py --username EricRosen --since 2026-01-01
+~~~
+
+
 
 
 # Directory Guide
