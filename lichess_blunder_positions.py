@@ -11,22 +11,10 @@ What it does:
 - Stores each found position locally in JSONL.
 - Exports repeated positions to a TXT file keyed by normalized FEN.
 - Emits progress logs while running.
+- Supports config.yaml defaults and an ignore list of FEN positions.
 
 Install:
-    pip install requests python-chess
-
-Examples:
-    python lichess_blunder_positions.py \
-        --username some_user \
-        --since 2025-01-01 \
-        --max-fullmoves 10 \
-        --out-dir out
-
-    python lichess_blunder_positions.py \
-        --username some_user \
-        --since 2025-01-01 \
-        --from-cpl 80 \
-        --out-dir out
+    pip install requests python-chess pyyaml
 """
 
 from __future__ import annotations
@@ -35,26 +23,29 @@ import argparse
 import json
 import logging
 import math
+import re
 import sys
 import time
 from collections import defaultdict
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 from io import StringIO
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Set, Tuple
 
 import chess
 import chess.pgn
 import requests
+import yaml
 
 
 API_URL_TEMPLATE = "https://lichess.org/api/games/user/{username}"
 QUALIFYING_JUDGMENTS = {"Inaccuracy", "Mistake", "Blunder"}
+DEFAULT_CONFIG_PATH = "config.yaml"
 
 
 @dataclass
-class BlunderRecord:
+class ErrorRecord:
     username: str
     game_id: str
     game_url: str
@@ -65,16 +56,16 @@ class BlunderRecord:
     white: str
     black: str
     result: str
-    move_number: int               # fullmove number, e.g. 6 means move 6
-    ply_index: int                 # 1-based ply index
-    san_played: str                # SAN of the move
-    fen_before: str                # full FEN before the move
-    normalized_fen: str            # FEN normalized for repetition matching
-    comment: Optional[str]         # analysis comment if present
-    judgment_name: Optional[str]   # e.g. "Inaccuracy", "Mistake", "Blunder"
-    source: str                    # "analysis", "pgn_nag", "pgn_comment", or "analysis_cpl"
-    cpl: Optional[int]             # centipawn loss if computed
-    threshold_used: Optional[int]  # value of --from-cpl when CPL mode is used
+    move_number: int
+    ply_index: int
+    san_played: str
+    fen_before: str
+    normalized_fen: str
+    comment: Optional[str]
+    judgment_name: Optional[str]
+    source: str
+    cpl: Optional[int]
+    threshold_used: Optional[int]
 
 
 def setup_logging(verbose: bool) -> None:
@@ -90,10 +81,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Find recurring early error positions for a Lichess user."
     )
-    parser.add_argument("--username", required=True, help="Lichess username")
+    parser.add_argument("--username", default=None, help="Lichess username")
     parser.add_argument(
         "--since",
-        required=True,
+        default=None,
         help="Start date in YYYY-MM-DD (inclusive, interpreted as 00:00:00 UTC)",
     )
     parser.add_argument(
@@ -112,9 +103,9 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
-        "--out-dir",
-        default="lichess_blunder_output",
-        help="Directory for output files",
+        "--config",
+        default=DEFAULT_CONFIG_PATH,
+        help="Path to config YAML file (default: config.yaml)",
     )
     parser.add_argument(
         "--token",
@@ -141,8 +132,23 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def yyyy_mm_dd_to_epoch_ms(date_str: str) -> int:
-    dt = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+def yyyy_mm_dd_to_epoch_ms(date_input) -> int:
+    """
+    Accepts:
+    - "YYYY-MM-DD" string
+    - datetime.date
+    - datetime.datetime
+    """
+    if isinstance(date_input, datetime):
+        dt = date_input
+    elif isinstance(date_input, date):
+        dt = datetime.combine(date_input, datetime.min.time())
+    elif isinstance(date_input, str):
+        dt = datetime.strptime(date_input, "%Y-%m-%d")
+    else:
+        raise TypeError(f"Unsupported date type: {type(date_input)}")
+
+    dt = dt.replace(tzinfo=timezone.utc)
     return int(dt.timestamp() * 1000)
 
 
@@ -157,10 +163,19 @@ def normalized_fen(board: chess.Board) -> str:
     return f"{board.board_fen()} {'w' if board.turn else 'b'} {board.castling_xfen()} {ep} 0 1"
 
 
+def normalize_fen_string(fen: str) -> str:
+    """
+    Normalize incoming FEN strings so config ignores match the same normalized form
+    used internally for repetition matching.
+    """
+    board = chess.Board(fen)
+    return normalized_fen(board)
+
+
 def lichess_headers(token: Optional[str]) -> Dict[str, str]:
     headers = {
         "Accept": "application/x-ndjson",
-        "User-Agent": "lichess-blunder-positions/1.1",
+        "User-Agent": "lichess-blunder-positions/1.2",
     }
     if token:
         headers["Authorization"] = f"Bearer {token}"
@@ -173,11 +188,6 @@ def stream_user_games(
     token: Optional[str],
     timeout: int,
 ) -> Iterator[Dict[str, Any]]:
-    """
-    Streams NDJSON game exports from Lichess.
-
-    Retries politely on 429 according to Lichess guidance.
-    """
     url = API_URL_TEMPLATE.format(username=username)
     params = {
         "since": since_ms,
@@ -245,13 +255,6 @@ def get_user_color_and_opponent(
 
 
 def eval_item_to_pawns(eval_item: Optional[Dict[str, Any]]) -> Optional[float]:
-    """
-    Convert one Lichess analysis item to a pawn-score from White's perspective.
-    Returns:
-      - float pawn score if cp is available
-      - +/-inf if mate is available
-      - None otherwise
-    """
     if not isinstance(eval_item, dict):
         return None
 
@@ -276,16 +279,6 @@ def compute_centipawn_loss_for_move(
     analysis_after: Optional[Dict[str, Any]],
     mover_is_white: bool,
 ) -> Optional[int]:
-    """
-    Compute CPL for the played move based on eval before and after the move.
-
-    Both evals are interpreted from White's perspective.
-    For White move: CPL ~= (before - after) in pawns if score worsened for White.
-    For Black move: CPL ~= (after - before) in pawns if score worsened for Black,
-                    equivalently if White's eval increased after Black's move.
-
-    Mate scores are not converted into a finite CPL.
-    """
     before = eval_item_to_pawns(analysis_before)
     after = eval_item_to_pawns(analysis_after)
 
@@ -310,14 +303,7 @@ def extract_first_error_from_game(
     username: str,
     max_fullmoves: int,
     from_cpl: int,
-) -> Optional[BlunderRecord]:
-    """
-    If from_cpl == 0:
-        Prefer structured JSON judgment, and treat Inaccuracy/Mistake/Blunder as qualifying.
-        Fall back to PGN NAG/comment detection.
-    If from_cpl > 0:
-        Ignore judgment text and use CPL threshold instead, based on adjacent analysis entries.
-    """
+) -> Optional[ErrorRecord]:
     variant = (game_json.get("variant") or "").lower()
     if variant != "standard":
         return None
@@ -361,9 +347,8 @@ def extract_first_error_from_game(
             san_played = board.san(move)
             mover_is_white = board.turn == chess.WHITE
 
-            # CPL mode
             if from_cpl > 0 and has_structured_analysis:
-                analysis_before = analysis[ply_index - 2] if (ply_index - 2) >= 0 and (ply_index - 2) < len(analysis) else None
+                analysis_before = analysis[ply_index - 2] if 0 <= (ply_index - 2) < len(analysis) else None
                 analysis_after = analysis[ply_index - 1] if (ply_index - 1) < len(analysis) else None
                 cpl = compute_centipawn_loss_for_move(
                     analysis_before=analysis_before,
@@ -374,7 +359,7 @@ def extract_first_error_from_game(
                     judgment = (analysis_after or {}).get("judgment") or {}
                     judgment_name = judgment.get("name")
                     comment = judgment.get("comment")
-                    return BlunderRecord(
+                    return ErrorRecord(
                         username=username,
                         game_id=game_json.get("id", ""),
                         game_url=f"https://lichess.org/{game_json.get('id', '')}",
@@ -397,7 +382,6 @@ def extract_first_error_from_game(
                         threshold_used=from_cpl,
                     )
 
-            # Judgment-text mode
             elif from_cpl == 0:
                 if has_structured_analysis and len(analysis) >= ply_index:
                     analysis_item = analysis[ply_index - 1] or {}
@@ -406,7 +390,7 @@ def extract_first_error_from_game(
                     comment = judgment.get("comment")
 
                     if judgment_name in QUALIFYING_JUDGMENTS:
-                        return BlunderRecord(
+                        return ErrorRecord(
                             username=username,
                             game_id=game_json.get("id", ""),
                             game_url=f"https://lichess.org/{game_json.get('id', '')}",
@@ -429,11 +413,9 @@ def extract_first_error_from_game(
                             threshold_used=None,
                         )
 
-                # PGN fallback only in judgment-text mode
                 comment_text = (next_node.comment or "").strip()
                 nags = set(next_node.nags or set())
 
-                # python-chess has standard NAG constants for inaccuracies, mistakes, blunders
                 is_pgn_error = (
                     chess.pgn.NAG_DUBIOUS_MOVE in nags
                     or chess.pgn.NAG_MISTAKE in nags
@@ -452,7 +434,7 @@ def extract_first_error_from_game(
                     elif chess.pgn.NAG_DUBIOUS_MOVE in nags or "inaccuracy" in comment_text.lower():
                         derived_name = "Inaccuracy"
 
-                    return BlunderRecord(
+                    return ErrorRecord(
                         username=username,
                         game_id=game_json.get("id", ""),
                         game_url=f"https://lichess.org/{game_json.get('id', '')}",
@@ -484,13 +466,13 @@ def extract_first_error_from_game(
     return None
 
 
-def write_jsonl(path: Path, records: Iterable[BlunderRecord]) -> None:
+def write_jsonl(path: Path, records: Iterable[ErrorRecord]) -> None:
     with path.open("w", encoding="utf-8") as f:
         for record in records:
             f.write(json.dumps(asdict(record), ensure_ascii=False) + "\n")
 
 
-def write_repeated_txt(path: Path, grouped: Dict[str, List[BlunderRecord]]) -> None:
+def write_repeated_txt(path: Path, grouped: Dict[str, List[ErrorRecord]]) -> None:
     repeated_items = [(fen, recs) for fen, recs in grouped.items() if len(recs) > 1]
     repeated_items.sort(key=lambda item: (-len(item[1]), item[0]))
 
@@ -518,18 +500,123 @@ def write_repeated_txt(path: Path, grouped: Dict[str, List[BlunderRecord]]) -> N
             f.write("\n")
 
 
+def timestamp_affix() -> str:
+    return datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+
+
+def ensure_output_dirs() -> Tuple[Path, Path]:
+    jsonl_dir = Path("out") / "blunder_positions"
+    txt_dir = Path("out") / "txt_reports"
+    jsonl_dir.mkdir(parents=True, exist_ok=True)
+    txt_dir.mkdir(parents=True, exist_ok=True)
+    return jsonl_dir, txt_dir
+
+
+def parse_ignore_positions_fallback(raw_text: str) -> List[str]:
+    """
+    Supports the exact loose template style the user provided, where ignore-positions
+    is followed by indented FEN lines without YAML list dashes.
+    """
+    lines = raw_text.splitlines()
+    in_block = False
+    results: List[str] = []
+
+    for line in lines:
+        if re.match(r"^\s*ignore-positions\s*:\s*$", line):
+            in_block = True
+            continue
+
+        if in_block:
+            if not line.strip():
+                continue
+            if re.match(r"^\S", line):
+                break
+            fen = line.strip()
+            if fen:
+                results.append(fen)
+
+    return results
+
+
+def load_config(config_path: str) -> Dict[str, Any]:
+    path = Path(config_path)
+    if not path.exists():
+        logging.info("Config file not found at %s; continuing without config defaults.", config_path)
+        return {}
+
+    raw_text = path.read_text(encoding="utf-8")
+
+    loaded: Dict[str, Any] = {}
+    yaml_ok = False
+
+    try:
+        parsed = yaml.safe_load(raw_text)
+        if isinstance(parsed, dict):
+            loaded = parsed
+            yaml_ok = True
+    except yaml.YAMLError:
+        yaml_ok = False
+
+    if not yaml_ok:
+        logging.warning(
+            "Config YAML parsing failed or was not a mapping. Falling back to lenient parser for ignore-positions."
+        )
+
+    config: Dict[str, Any] = {}
+    config["default-lichess-username"] = loaded.get("default-lichess-username")
+    config["default-start-date"] = loaded.get("default-start-date")
+
+    ignore_positions = loaded.get("ignore-positions", None)
+
+    if isinstance(ignore_positions, list):
+        config["ignore-positions"] = [str(x).strip() for x in ignore_positions if str(x).strip()]
+    elif isinstance(ignore_positions, str):
+        config["ignore-positions"] = [line.strip() for line in ignore_positions.splitlines() if line.strip()]
+    else:
+        config["ignore-positions"] = parse_ignore_positions_fallback(raw_text)
+
+    return config
+
+
+def resolve_runtime_settings(args: argparse.Namespace, config: Dict[str, Any]) -> Tuple[str, str, Set[str]]:
+    username = args.username or config.get("default-lichess-username")
+    since = args.since or config.get("default-start-date")
+
+    if not username:
+        raise ValueError("No username provided. Use --username or set default-lichess-username in config.yaml.")
+    if not since:
+        raise ValueError("No start date provided. Use --since or set default-start-date in config.yaml.")
+
+    ignore_fens_raw = config.get("ignore-positions", []) or []
+    ignore_fens_normalized: Set[str] = set()
+
+    for fen in ignore_fens_raw:
+        try:
+            ignore_fens_normalized.add(normalize_fen_string(fen))
+        except Exception as exc:
+            logging.warning("Skipping invalid ignore-position FEN from config: %s (%s)", fen, exc)
+
+    return username, since, ignore_fens_normalized
+
+
 def main() -> int:
     args = parse_args()
     setup_logging(args.verbose)
 
-    out_dir = Path(args.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
+    config = load_config(args.config)
+    username, since_str, ignore_fens = resolve_runtime_settings(args, config)
 
-    since_ms = yyyy_mm_dd_to_epoch_ms(args.since)
+    since_ms = yyyy_mm_dd_to_epoch_ms(since_str)
+    jsonl_dir, txt_dir = ensure_output_dirs()
+    stamp = timestamp_affix()
+
+    jsonl_path = jsonl_dir / f"blunder_positions_{stamp}.jsonl"
+    repeated_txt_path = txt_dir / f"repeated_blunder_positions_{stamp}.txt"
+
     logging.info(
         "Starting scan for user=%s since=%s (epoch_ms=%d), max_fullmoves=%d, from_cpl=%d",
-        args.username,
-        args.since,
+        username,
+        since_str,
         since_ms,
         args.max_fullmoves,
         args.from_cpl,
@@ -540,17 +627,22 @@ def main() -> int:
     else:
         logging.info("Mode: centipawn loss threshold >= %d", args.from_cpl)
 
+    logging.info("Ignoring %d configured position(s).", len(ignore_fens))
+    logging.info("JSONL output will be written to: %s", jsonl_path.resolve())
+    logging.info("TXT report will be written to: %s", repeated_txt_path.resolve())
+
     processed = 0
     standard_games = 0
     found_errors = 0
+    ignored_matches = 0
     skipped_duplicates = 0
     seen_game_ids = set()
 
-    records: List[BlunderRecord] = []
+    records: List[ErrorRecord] = []
 
     try:
         for game_json in stream_user_games(
-            username=args.username,
+            username=username,
             since_ms=since_ms,
             token=args.token,
             timeout=args.timeout,
@@ -567,10 +659,11 @@ def main() -> int:
             if (game_json.get("variant") or "").lower() != "standard":
                 if processed % args.log_every == 0:
                     logging.info(
-                        "Progress: processed=%d standard=%d found=%d duplicates=%d",
+                        "Progress: processed=%d standard=%d found=%d ignored=%d duplicates=%d",
                         processed,
                         standard_games,
                         found_errors,
+                        ignored_matches,
                         skipped_duplicates,
                     )
                 continue
@@ -579,31 +672,42 @@ def main() -> int:
 
             record = extract_first_error_from_game(
                 game_json=game_json,
-                username=args.username,
+                username=username,
                 max_fullmoves=args.max_fullmoves,
                 from_cpl=args.from_cpl,
             )
+
             if record is not None:
-                found_errors += 1
-                logging.info(
-                    "Found early error: game=%s move=%d color=%s san=%s source=%s judgment=%s cpl=%s fen=%s",
-                    record.game_id,
-                    record.move_number,
-                    record.color,
-                    record.san_played,
-                    record.source,
-                    record.judgment_name,
-                    record.cpl,
-                    record.normalized_fen,
-                )
-                records.append(record)
+                if record.normalized_fen in ignore_fens:
+                    ignored_matches += 1
+                    logging.info(
+                        "Ignored configured position: game=%s move=%d fen=%s",
+                        record.game_id,
+                        record.move_number,
+                        record.normalized_fen,
+                    )
+                else:
+                    found_errors += 1
+                    logging.info(
+                        "Found early error: game=%s move=%d color=%s san=%s source=%s judgment=%s cpl=%s fen=%s",
+                        record.game_id,
+                        record.move_number,
+                        record.color,
+                        record.san_played,
+                        record.source,
+                        record.judgment_name,
+                        record.cpl,
+                        record.normalized_fen,
+                    )
+                    records.append(record)
 
             if processed % args.log_every == 0:
                 logging.info(
-                    "Progress: processed=%d standard=%d found=%d duplicates=%d",
+                    "Progress: processed=%d standard=%d found=%d ignored=%d duplicates=%d",
                     processed,
                     standard_games,
                     found_errors,
+                    ignored_matches,
                     skipped_duplicates,
                 )
 
@@ -613,12 +717,9 @@ def main() -> int:
         logging.exception("Fatal error: %s", exc)
         return 1
 
-    grouped: Dict[str, List[BlunderRecord]] = defaultdict(list)
+    grouped: Dict[str, List[ErrorRecord]] = defaultdict(list)
     for rec in records:
         grouped[rec.normalized_fen].append(rec)
-
-    jsonl_path = out_dir / "blunder_positions.jsonl"
-    repeated_txt_path = out_dir / "repeated_blunder_positions.txt"
 
     write_jsonl(jsonl_path, records)
     write_repeated_txt(repeated_txt_path, grouped)
@@ -629,6 +730,7 @@ def main() -> int:
     logging.info("Processed total games: %d", processed)
     logging.info("Standard games checked: %d", standard_games)
     logging.info("Error positions stored: %d", len(records))
+    logging.info("Ignored configured matches: %d", ignored_matches)
     logging.info("Repeated error positions found: %d", repeated_count)
     logging.info("JSONL output: %s", jsonl_path.resolve())
     logging.info("TXT output: %s", repeated_txt_path.resolve())
