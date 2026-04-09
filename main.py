@@ -17,22 +17,23 @@ Install:
     pip install requests python-chess pyyaml
 """
 
-# main.py
+from __future__ import annotations
+
 import logging
 import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
-from io_utils.cache import dedupe_records, filter_records_by_since, get_saved_since, load_saved_jsonl, saved_file_can_be_reused
-from io_utils.config_loader import load_config, resolve_runtime_settings
-from io_utils.writers import ensure_output_dirs, write_jsonl, write_repeated_txt
-from core.grouping import collect_records_from_stream
-from lichess.api import stream_user_games
 from models.records import ErrorRecord, GenerationMetadata
 from utils.cli import build_command_string, build_effective_params, parse_args
 from utils.logging_utils import setup_logging
 from utils.time_utils import human_timestamp, iso_utc, now_utc, parse_iso_datetime, timestamp_affix, yyyy_mm_dd_to_epoch_ms
+from core.grouping import collect_records_from_stream
+from lichess.api import stream_user_games
+from io_utils.cache import dedupe_records, filter_records_by_since, get_saved_since, load_saved_jsonl, saved_file_can_be_reused
+from io_utils.config_loader import load_config, resolve_runtime_settings
+from io_utils.writers import ensure_output_dirs, write_jsonl, write_repeated_txt
 
 
 def main() -> int:
