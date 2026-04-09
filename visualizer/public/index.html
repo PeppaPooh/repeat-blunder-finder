@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chess Blunders</title>
+    <link rel="stylesheet" href="/vendor/chessground/assets/chessground.base.css">
+    <link rel="stylesheet" href="/vendor/chessground/assets/chessground.brown.css">
+    <link rel="stylesheet" href="/vendor/chessground/assets/chessground.cburnett.css">
+    <style>
+        :root {
+            --bg: #f6f2e8;
+            --card: #fffaf2;
+            --accent: #9b5d2e;
+            --text: #2f2215;
+        }
+
+        body {
+            margin: 0;
+            padding: 16px;
+            background: radial-gradient(circle at top, #fffaf1, var(--bg));
+            color: var(--text);
+            font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+        }
+
+        #status {
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        #boards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid #d4c1a4;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .meta {
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .cg-wrap {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            min-height: 280px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .controls {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button {
+            border: 1px solid #c8ad88;
+            background: #fffbf5;
+            color: var(--text);
+            border-radius: 8px;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #pagination {
+            margin-top: 14px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="status">Loading...</div>
+    <div id="boards"></div>
+    <div id="pagination">
+        <button id="prev">Prev</button>
+        <button id="next">Next</button>
+        <span id="page-info"></span>
+    </div>
+    <script type="module">
+        let Chessground = null;
+        let page = 0;
+        const perPage = 6;
+        let totalPages = 1;
+        const statusEl = document.getElementById('status');
+
+        function fail(message) {
+            statusEl.textContent = message;
+            document.getElementById('prev').disabled = true;
+            document.getElementById('next').disabled = true;
+        }
+
+        window.addEventListener('error', (event) => {
+            fail(`Frontend error: ${event.message}`);
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            const reason = event.reason && event.reason.message ? event.reason.message : String(event.reason);
+            fail(`Frontend promise error: ${reason}`);
+        });
+
+        async function loadBlunders() {
+            const container = document.getElementById('boards');
+            const pageInfo = document.getElementById('page-info');
+            try {
+                const res = await fetch(`/blunders?page=${page}&perPage=${perPage}`);
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status} from /blunders`);
+                }
+                const data = await res.json();
+                container.innerHTML = '';
+                totalPages = data.totalPages || 1;
+                pageInfo.textContent = `Page ${data.page + 1} / ${totalPages}`;
+                statusEl.textContent = `${data.total} blunders sorted by most recent occurrence`;
+
+                data.blunders.forEach((b, idx) => {
+                    const card = document.createElement('section');
+                    card.className = 'card';
+
+                    const meta = document.createElement('div');
+                    meta.className = 'meta';
+                    meta.innerHTML = `<strong>#${b.index}</strong> Count: ${b.count} <br>Latest: ${new Date(b.latestDateIso).toLocaleString()}${b.opening ? `<br>Opening: ${b.opening}` : ''}${b.url ? `<br><a href="${b.url}" target="_blank" rel="noopener noreferrer">Sample game</a>` : ''}`;
+                    card.appendChild(meta);
+
+                    const boardHost = document.createElement('div');
+                    boardHost.id = 'board-' + idx;
+                    card.appendChild(boardHost);
+                    container.appendChild(card);
+
+                    const fens = Array.isArray(b.replayFens) && b.replayFens.length > 0
+                        ? b.replayFens
+                        : [b.fen];
+                    const moves = Array.isArray(b.replayMoves) ? b.replayMoves : [];
+                    const ground = Chessground(boardHost, {
+                        fen: fens[0],
+                        coordinates: true,
+                        viewOnly: true,
+                        orientation: 'white',
+                    });
+
+                    function renderPosition() {
+                        const fen = fens[Math.min(moveIndex, fens.length - 1)];
+                        const fenParts = fen.split(' ');
+                        const turn = fenParts.length > 1 && fenParts[1] === 'b' ? 'black' : 'white';
+                        ground.set({
+                            fen,
+                            turnColor: turn,
+                        });
+                    }
+
+                    const ctrl = document.createElement('div');
+                    ctrl.className = 'controls';
+                    const backBtn = document.createElement('button');
+                    backBtn.textContent = 'Back';
+                    const fwdBtn = document.createElement('button');
+                    fwdBtn.textContent = 'Forward';
+                    const moveInfo = document.createElement('span');
+                    ctrl.appendChild(backBtn);
+                    ctrl.appendChild(fwdBtn);
+                    ctrl.appendChild(moveInfo);
+                    card.appendChild(ctrl);
+
+                    let moveIndex = 0;
+                    const maxMoveIndex = Math.max(0, fens.length - 1);
+
+                    function updateButtons() {
+                        backBtn.disabled = moveIndex === 0;
+                        fwdBtn.disabled = moveIndex >= maxMoveIndex;
+                        moveInfo.textContent = `Move ${moveIndex}/${maxMoveIndex}`;
+                    }
+
+                    backBtn.onclick = () => {
+                        if (moveIndex > 0) {
+                            moveIndex--;
+                            moveIndex = Math.max(0, moveIndex);
+                            renderPosition();
+                            updateButtons();
+                        }
+                    };
+
+                    fwdBtn.onclick = () => {
+                        if (moveIndex < maxMoveIndex) {
+                            moveIndex++;
+                            renderPosition();
+                            updateButtons();
+                        }
+                    };
+
+                    updateButtons();
+                    renderPosition();
+                });
+
+                document.getElementById('prev').disabled = page <= 0;
+                document.getElementById('next').disabled = page >= totalPages - 1;
+            } catch (err) {
+                statusEl.textContent = `Failed to load blunders: ${err.message}. Start server with "npm start" and open http://localhost:3000`;
+                container.innerHTML = '';
+                document.getElementById('prev').disabled = true;
+                document.getElementById('next').disabled = true;
+            }
+        }
+
+        document.getElementById('next').onclick = () => {
+            if (page < totalPages - 1) {
+                page++;
+                loadBlunders();
+            }
+        };
+        document.getElementById('prev').onclick = () => {
+            if (page > 0) {
+                page--;
+                loadBlunders();
+            }
+        };
+
+        async function boot() {
+            try {
+                const chessgroundModule = await import('/vendor/chessground/dist/chessground.js');
+                Chessground = chessgroundModule.Chessground;
+                if (!Chessground) {
+                    throw new Error('Chessground export missing');
+                }
+                await loadBlunders();
+            } catch (err) {
+                const message = err && err.message ? err.message : String(err);
+                fail(`Frontend init failed: ${message}`);
+            }
+        }
+
+        boot();
+    </script>
+</body>
+</html>
