@@ -1,0 +1,206 @@
+=== Repeated Position #1 ===
+Count: 3
+FEN: r1bqk2r/ppp2ppp/2p5/2b4n/4P3/2P2P2/PP1P2PP/RNBQKB1R w KQkq - 0 1
+Most common game PGN (3x): 1. e4 e5 2. Nf3 Nf6 3. Nxe5 Nc6 4. Nxc6 dxc6 5. f3 Bc5 6. c3 Nh5 7. d4
+Occurrences:
+  PGN group (3x): 1. e4 e5 2. Nf3 Nf6 3. Nxe5 Nc6 4. Nxc6 dxc6 5. f3 Bc5 6. c3 Nh5 7. d4 | opening=Petrov's Defense: Stafford Gambit (3x)
+    - game=dDjnTup6 date=2025-12-31T06:24:24.932000+00:00 color=white move=7 san=d4 opponent=nefel4817 judgment=Inaccuracy opening=Petrov's Defense: Stafford Gambit url=https://lichess.org/dDjnTup6
+    - game=Efp3yAbx date=2025-12-05T22:28:06.925000+00:00 color=white move=7 san=d4 opponent=Nustablunder judgment=Inaccuracy opening=Petrov's Defense: Stafford Gambit url=https://lichess.org/Efp3yAbx
+    - game=ED51e785 date=2025-12-04T21:08:05.210000+00:00 color=white move=7 san=d4 opponent=amberedtrinity judgment=Inaccuracy opening=Petrov's Defense: Stafford Gambit url=https://lichess.org/ED51e785
+
+=== Repeated Position #2 ===
+Count: 3
+FEN: r1bqkbnr/ppp2ppp/2np4/4P3/8/5N2/PPP1PPPP/RNBQKB1R w KQkq - 0 1
+Most common game PGN (1x): 1. d4 e5 2. dxe5 Nc6 3. Nf3 d6 4. Nc3
+Occurrences:
+  PGN group (1x): 1. d4 e5 2. dxe5 Nc6 3. Nf3 d6 4. Nc3 | opening=Englund Gambit (1x)
+    - game=7F8Je95m date=2025-10-20T04:50:45.922000+00:00 color=white move=4 san=Nc3 opponent=aleksejholkin judgment=Inaccuracy opening=Englund Gambit url=https://lichess.org/7F8Je95m
+  PGN group (1x): 1. d4 e5 2. dxe5 d6 3. Nf3 Nc6 4. Bd2 | opening=Englund Gambit: Hartlaub-Charlick Gambit (1x)
+    - game=zcKOxwJ4 date=2025-03-14T01:46:03.167000+00:00 color=white move=4 san=Bd2 opponent=zhosta judgment=Mistake opening=Englund Gambit: Hartlaub-Charlick Gambit url=https://lichess.org/zcKOxwJ4
+  PGN group (1x): 1. d4 e5 2. dxe5 d6 3. Nf3 Nc6 4. e4 | opening=Englund Gambit: Hartlaub-Charlick Gambit (1x)
+    - game=IY5A7qYD date=2025-10-02T19:46:35.002000+00:00 color=white move=4 san=e4 opponent=Aslan_Zh1977 judgment=Inaccuracy opening=Englund Gambit: Hartlaub-Charlick Gambit url=https://lichess.org/IY5A7qYD
+
+=== Repeated Position #3 ===
+Count: 3
+FEN: r3kb1r/ppp1qppp/2n2n2/8/2b5/2N2N2/PP1PBPPP/R1BQ1RK1 b kq - 0 1
+Most common game PGN (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. dxe6 Bxe6 5. Nf3 Qe7 6. Be2 Bxc4 7. Nc3 Nc6 8. O-O Be6
+Occurrences:
+  PGN group (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. dxe6 Bxe6 5. Nf3 Qe7 6. Be2 Bxc4 7. Nc3 Nc6 8. O-O Be6 | opening=Scandinavian Defense: Icelandic-Palme Gambit (2x)
+    - game=cV39ZA9s date=2025-01-07T19:47:47.996000+00:00 color=black move=8 san=Be6 opponent=unrighteousness judgment=Mistake opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/cV39ZA9s
+    - game=0URqIqO3 date=2025-01-06T20:06:15.944000+00:00 color=black move=8 san=Be6 opponent=unrighteousness judgment=Mistake opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/0URqIqO3
+  PGN group (1x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. dxe6 Bxe6 5. Nf3 Qe7 6. Nc3 Bxc4+ 7. Be2 Nc6 8. O-O Be6 | opening=Scandinavian Defense: Icelandic-Palme Gambit (1x)
+    - game=xOoDbE3g date=2025-10-17T16:52:18.572000+00:00 color=black move=8 san=Be6 opponent=Biletnov judgment=Mistake opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/xOoDbE3g
+
+=== Repeated Position #4 ===
+Count: 3
+FEN: rn1qkb1r/ppp1pppp/8/3n4/3P4/3Q1N2/PPP2PPP/RNB1K2R b KQkq - 0 1
+Most common game PGN (2x): 1. e4 d5 2. exd5 Nf6 3. Nf3 Nxd5 4. d4 Bf5 5. Bd3 Bxd3 6. Qxd3 Nc6
+Occurrences:
+  PGN group (2x): 1. e4 d5 2. exd5 Nf6 3. Nf3 Nxd5 4. d4 Bf5 5. Bd3 Bxd3 6. Qxd3 Nc6 | opening=Scandinavian Defense: Modern Variation (2x)
+    - game=2bSz6rc9 date=2025-10-01T16:38:26.610000+00:00 color=black move=6 san=Nc6 opponent=Braiight judgment=Inaccuracy opening=Scandinavian Defense: Modern Variation url=https://lichess.org/2bSz6rc9
+    - game=tIu6Yl2W date=2025-03-13T22:39:24.646000+00:00 color=black move=6 san=Nc6 opponent=robindidon judgment=Inaccuracy opening=Scandinavian Defense: Modern Variation url=https://lichess.org/tIu6Yl2W
+  PGN group (1x): 1. e4 d5 2. exd5 Nf6 3. Nf3 Nxd5 4. d4 Bf5 5. Bd3 Bxd3 6. Qxd3 Nb4 | opening=Scandinavian Defense: Modern Variation (1x)
+    - game=E8gJ10t4 date=2025-03-11T00:03:47.935000+00:00 color=black move=6 san=Nb4 opponent=Semisi judgment=Mistake opening=Scandinavian Defense: Modern Variation url=https://lichess.org/E8gJ10t4
+
+=== Repeated Position #5 ===
+Count: 3
+FEN: rnbqkb1r/ppp2ppp/4pn2/3P4/2P5/2N5/PP1P1PPP/R1BQKBNR b KQkq - 0 1
+Most common game PGN (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. Nc3 Qe7
+Occurrences:
+  PGN group (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. Nc3 Qe7 | opening=Scandinavian Defense: Icelandic-Palme Gambit (2x)
+    - game=miVAMrtf date=2025-07-03T01:23:06.507000+00:00 color=black move=4 san=Qe7 opponent=JRumbo judgment=Inaccuracy opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/miVAMrtf
+    - game=UNbebRkp date=2025-03-23T16:03:04.848000+00:00 color=black move=4 san=Qe7 opponent=Sinxcosxpi judgment=Inaccuracy opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/UNbebRkp
+  PGN group (1x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. Nc3 c6 | opening=Scandinavian Defense: Icelandic-Palme Gambit (1x)
+    - game=0jAtJDMK date=2025-02-06T00:54:48.062000+00:00 color=black move=4 san=c6 opponent=Hanshi42 judgment=Mistake opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/0jAtJDMK
+
+=== Repeated Position #6 ===
+Count: 2
+FEN: r1bq1rk1/1p1nppbp/p2p1np1/2p5/3PP3/2N1B1PP/PPP1NPB1/R2QK2R w KQ - 0 1
+Most common game PGN (1x): 1. d4 Nf6 2. g3 d6 3. Bg2 g6 4. e4 Bg7 5. Nc3 O-O 6. Nge2 Nbd7 7. h3 c5 8. Be3 a6 9. e5
+Occurrences:
+  PGN group (1x): 1. d4 Nf6 2. g3 d6 3. Bg2 g6 4. e4 Bg7 5. Nc3 O-O 6. Nge2 Nbd7 7. h3 c5 8. Be3 a6 9. e5 | opening=Indian Defense: Tartakower Attack (1x)
+    - game=5lAYuub3 date=2025-02-16T00:52:53.025000+00:00 color=white move=9 san=e5 opponent=ludan24 judgment=Mistake opening=Indian Defense: Tartakower Attack url=https://lichess.org/5lAYuub3
+  PGN group (1x): 1. d4 Nf6 2. g3 g6 3. Bg2 Bg7 4. e4 d6 5. Nc3 Nbd7 6. Nge2 O-O 7. h3 c5 8. Be3 a6 9. O-O | opening=Indian Defense: Tartakower Attack (1x)
+    - game=0y44GwmH date=2025-02-16T01:16:56.621000+00:00 color=white move=9 san=O-O opponent=DECB001 judgment=Inaccuracy opening=Indian Defense: Tartakower Attack url=https://lichess.org/0y44GwmH
+
+=== Repeated Position #7 ===
+Count: 2
+FEN: r1bq1rk1/pp1n1pbp/2pp1np1/4p3/3PP3/2N1B1PP/PPP1NPB1/R2QK2R w KQ - 0 1
+Most common game PGN (1x): 1. d4 Nf6 2. g3 g6 3. Bg2 Bg7 4. e4 d6 5. Nc3 O-O 6. Nge2 Nbd7 7. h3 e5 8. Be3 c6 9. f4
+Occurrences:
+  PGN group (1x): 1. d4 Nf6 2. g3 g6 3. Bg2 Bg7 4. e4 d6 5. Nc3 O-O 6. Nge2 Nbd7 7. h3 e5 8. Be3 c6 9. f4 | opening=Indian Defense: Tartakower Attack (1x)
+    - game=T8al89hB date=2025-05-03T17:25:15.248000+00:00 color=white move=9 san=f4 opponent=Delacharette1 judgment=Inaccuracy opening=Indian Defense: Tartakower Attack url=https://lichess.org/T8al89hB
+  PGN group (1x): 1. d4 d6 2. g3 g6 3. Bg2 Bg7 4. e4 Nf6 5. Nc3 c6 6. Nge2 Nbd7 7. h3 e5 8. Be3 O-O 9. Qd2 | opening=Queen's Pawn Game (1x)
+    - game=rJ56E8sm date=2025-02-20T02:35:33.068000+00:00 color=white move=9 san=Qd2 opponent=matheuspombo judgment=Inaccuracy opening=Queen's Pawn Game url=https://lichess.org/rJ56E8sm
+
+=== Repeated Position #8 ===
+Count: 2
+FEN: r1bqkbnr/ppp2ppp/2n5/4P3/2Pp4/5N2/PP2PPPP/RNBQKB1R w KQkq - 0 1
+Most common game PGN (1x): 1. d4 d5 2. c4 e5 3. dxe5 d4 4. Nf3 Nc6 5. Bg5
+Occurrences:
+  PGN group (1x): 1. d4 d5 2. c4 e5 3. dxe5 d4 4. Nf3 Nc6 5. Bg5 | opening=Queen's Gambit Declined: Albin Countergambit, Normal Line (1x)
+    - game=JHXhcUwb date=2026-01-30T01:28:40.461000+00:00 color=white move=5 san=Bg5 opponent=Josepov2171 judgment=Inaccuracy opening=Queen's Gambit Declined: Albin Countergambit, Normal Line url=https://lichess.org/JHXhcUwb
+  PGN group (1x): 1. d4 d5 2. c4 e5 3. dxe5 d4 4. Nf3 Nc6 5. e3 | opening=Queen's Gambit Declined: Albin Countergambit, Normal Line (1x)
+    - game=CphWjPjr date=2026-01-10T22:32:10.064000+00:00 color=white move=5 san=e3 opponent=william_b1ake judgment=Inaccuracy opening=Queen's Gambit Declined: Albin Countergambit, Normal Line url=https://lichess.org/CphWjPjr
+
+=== Repeated Position #9 ===
+Count: 2
+FEN: r2qkbnr/ppp2ppp/2n5/4P3/2Pp2b1/P4N2/1P2PPPP/RNBQKB1R w KQkq - 0 1
+Most common game PGN (1x): 1. d4 d5 2. c4 e5 3. dxe5 d4 4. Nf3 Nc6 5. a3 Bg4 6. Bf4
+Occurrences:
+  PGN group (1x): 1. d4 d5 2. c4 e5 3. dxe5 d4 4. Nf3 Nc6 5. a3 Bg4 6. Bf4 | opening=Queen's Gambit Declined: Albin Countergambit, Normal Line (1x)
+    - game=C3XSctjA date=2025-02-24T22:07:27.731000+00:00 color=white move=6 san=Bf4 opponent=SWP-Chess judgment=Inaccuracy opening=Queen's Gambit Declined: Albin Countergambit, Normal Line url=https://lichess.org/C3XSctjA
+  PGN group (1x): 1. d4 d5 2. c4 e5 3. dxe5 d4 4. Nf3 Nc6 5. a3 Bg4 6. Bg5 | opening=Queen's Gambit Declined: Albin Countergambit, Normal Line (1x)
+    - game=VesCfsof date=2025-03-02T06:35:11.349000+00:00 color=white move=6 san=Bg5 opponent=aly_sl2 judgment=Inaccuracy opening=Queen's Gambit Declined: Albin Countergambit, Normal Line url=https://lichess.org/VesCfsof
+
+=== Repeated Position #10 ===
+Count: 2
+FEN: rn1qk2r/ppp2ppp/4bn2/8/1bPP4/2N5/PP3PPP/R1BQKBNR b KQkq - 0 1
+Most common game PGN (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. dxe6 Bxe6 5. d4 Bb4+ 6. Nc3 Qe7
+Occurrences:
+  PGN group (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. dxe6 Bxe6 5. d4 Bb4+ 6. Nc3 Qe7 | opening=Scandinavian Defense: Icelandic-Palme Gambit (2x)
+    - game=g5RpRZbT date=2025-12-20T05:52:28.798000+00:00 color=black move=6 san=Qe7 opponent=Mehdi14044 judgment=Inaccuracy opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/g5RpRZbT
+    - game=7XmIiiIp date=2025-11-27T00:55:31.687000+00:00 color=black move=6 san=Qe7 opponent=MS_Razavi judgment=Inaccuracy opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/7XmIiiIp
+
+=== Repeated Position #11 ===
+Count: 2
+FEN: rn1qkb1r/ppp1pppp/5nb1/8/3PP3/5N2/PP1N1PPP/R1BQKB1R w KQkq - 0 1
+Most common game PGN (1x): 1. d4 d5 2. c4 Nf6 3. cxd5 Nxd5 4. Nf3 Bf5 5. Nbd2 Bg6 6. e4 Nf6 7. Qb3
+Occurrences:
+  PGN group (1x): 1. d4 d5 2. c4 Nf6 3. cxd5 Nxd5 4. Nf3 Bf5 5. Nbd2 Bg6 6. e4 Nf6 7. Qb3 | opening=Queen's Gambit Declined: Marshall Defense (1x)
+    - game=MbgnxtDG date=2025-05-17T08:35:04.997000+00:00 color=white move=7 san=Qb3 opponent=AlmightyIndian judgment=Inaccuracy opening=Queen's Gambit Declined: Marshall Defense url=https://lichess.org/MbgnxtDG
+  PGN group (1x): 1. d4 d5 2. c4 Nf6 3. cxd5 Nxd5 4. Nf3 Bf5 5. Nbd2 Bg6 6. e4 Nf6 7. d5 | opening=Queen's Gambit Declined: Marshall Defense (1x)
+    - game=M2HjUL1W date=2025-02-20T02:55:44.814000+00:00 color=white move=7 san=d5 opponent=dileepmundaya judgment=Mistake opening=Queen's Gambit Declined: Marshall Defense url=https://lichess.org/M2HjUL1W
+
+=== Repeated Position #12 ===
+Count: 2
+FEN: rn1qkb1r/ppp2ppp/4bn2/8/2P5/1P6/P2P1PPP/RNBQKBNR b KQkq - 0 1
+Most common game PGN (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. dxe6 Bxe6 5. b3 Qe7
+Occurrences:
+  PGN group (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. dxe6 Bxe6 5. b3 Qe7 | opening=Scandinavian Defense: Icelandic-Palme Gambit (2x)
+    - game=WhlQcWhX date=2026-01-20T01:12:02.397000+00:00 color=black move=5 san=Qe7 opponent=patrickcm judgment=Mistake opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/WhlQcWhX
+    - game=TCx3KcsN date=2025-03-02T04:26:06.220000+00:00 color=black move=5 san=Qe7 opponent=Genuh judgment=Mistake opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/TCx3KcsN
+
+=== Repeated Position #13 ===
+Count: 2
+FEN: rn1qkbnr/pp2pppp/8/3p4/6b1/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 0 1
+Most common game PGN (2x): 1. e4 c6 2. Nc3 d5 3. Nf3 Bg4 4. exd5 cxd5 5. Ne5
+Occurrences:
+  PGN group (2x): 1. e4 c6 2. Nc3 d5 3. Nf3 Bg4 4. exd5 cxd5 5. Ne5 | opening=Caro-Kann Defense: Two Knights Attack, Mindeno Variation (2x)
+    - game=UTMN8bCy date=2026-01-10T20:19:24.284000+00:00 color=white move=5 san=Ne5 opponent=Beer_Turtle judgment=Blunder opening=Caro-Kann Defense: Two Knights Attack, Mindeno Variation url=https://lichess.org/UTMN8bCy
+    - game=daQ13TO7 date=2025-11-19T00:03:10.376000+00:00 color=white move=5 san=Ne5 opponent=Awotoyejr_A judgment=Blunder opening=Caro-Kann Defense: Two Knights Attack, Mindeno Variation url=https://lichess.org/daQ13TO7
+
+=== Repeated Position #14 ===
+Count: 2
+FEN: rn1qkbnr/ppp1pppp/6b1/8/3PP3/2N5/PP3PPP/R1BQKBNR w KQkq - 0 1
+Most common game PGN (1x): 1. d4 d5 2. c4 Bf5 3. cxd5 Qxd5 4. Nc3 Qd8 5. e4 Bg6 6. Bf4
+Occurrences:
+  PGN group (1x): 1. d4 d5 2. c4 Bf5 3. cxd5 Qxd5 4. Nc3 Qd8 5. e4 Bg6 6. Bf4 | opening=Queen's Gambit Declined: Baltic Defense (1x)
+    - game=IIAmETOy date=2026-01-06T03:06:32.756000+00:00 color=white move=6 san=Bf4 opponent=ALANSARY1212 judgment=Inaccuracy opening=Queen's Gambit Declined: Baltic Defense url=https://lichess.org/IIAmETOy
+  PGN group (1x): 1. d4 d5 2. c4 Bf5 3. cxd5 Qxd5 4. Nc3 Qd8 5. e4 Bg6 6. Qb3 | opening=Queen's Gambit Declined: Baltic Defense (1x)
+    - game=5O1GT5IQ date=2025-01-03T03:08:01.097000+00:00 color=white move=6 san=Qb3 opponent=Zidji judgment=Inaccuracy opening=Queen's Gambit Declined: Baltic Defense url=https://lichess.org/5O1GT5IQ
+
+=== Repeated Position #15 ===
+Count: 2
+FEN: rn2kb1r/ppp1qppp/4bn2/8/2P5/2N5/PP1PBPPP/R1BQK1NR b KQkq - 0 1
+Most common game PGN (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. dxe6 Bxe6 5. Nc3 Qe7 6. Be2 Bxc4
+Occurrences:
+  PGN group (2x): 1. e4 d5 2. exd5 Nf6 3. c4 e6 4. dxe6 Bxe6 5. Nc3 Qe7 6. Be2 Bxc4 | opening=Scandinavian Defense: Icelandic-Palme Gambit (2x)
+    - game=iX8nxuqc date=2026-01-02T01:38:38.958000+00:00 color=black move=6 san=Bxc4 opponent=set282 judgment=Mistake opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/iX8nxuqc
+    - game=X6cg73CI date=2025-05-28T00:30:07.033000+00:00 color=black move=6 san=Bxc4 opponent=Sabdelazim judgment=Mistake opening=Scandinavian Defense: Icelandic-Palme Gambit url=https://lichess.org/X6cg73CI
+
+=== Repeated Position #16 ===
+Count: 2
+FEN: rnb1kbnr/ppppqppp/8/4P3/8/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1
+Most common game PGN (2x): 1. d4 e5 2. dxe5 Qe7 3. Nf3
+Occurrences:
+  PGN group (2x): 1. d4 e5 2. dxe5 Qe7 3. Nf3 | opening=Englund Gambit: Main Line (2x)
+    - game=dVIY6mwT date=2025-03-28T23:24:14.916000+00:00 color=white move=3 san=Nf3 opponent=Malbah judgment=Inaccuracy opening=Englund Gambit: Main Line url=https://lichess.org/dVIY6mwT
+    - game=o6iukuHk date=2025-02-22T22:49:47.905000+00:00 color=white move=3 san=Nf3 opponent=Rizzo79 judgment=Inaccuracy opening=Englund Gambit: Main Line url=https://lichess.org/o6iukuHk
+
+=== Repeated Position #17 ===
+Count: 2
+FEN: rnbqkb1r/pp3ppp/2p1pn2/3p4/2PP1B2/2N2N2/PP2PPPP/R2QKB1R b KQkq - 0 1
+Most common game PGN (1x): 1. Nf3 Nf6 2. c4 c6 3. d4 d5 4. Nc3 e6 5. Bf4 Qb6
+Occurrences:
+  PGN group (1x): 1. Nf3 Nf6 2. c4 c6 3. d4 d5 4. Nc3 e6 5. Bf4 Qb6 | opening=Semi-Slav Defense (1x)
+    - game=V3xLKqVY date=2025-11-29T18:26:04.276000+00:00 color=black move=5 san=Qb6 opponent=wowa1980RUS judgment=Inaccuracy opening=Semi-Slav Defense url=https://lichess.org/V3xLKqVY
+  PGN group (1x): 1. d4 d5 2. c4 e6 3. Nf3 Nf6 4. Nc3 c6 5. Bf4 Qb6 | opening=Semi-Slav Defense (1x)
+    - game=EIvp95H5 date=2025-04-28T21:14:52.900000+00:00 color=black move=5 san=Qb6 opponent=Mutu1907 judgment=Inaccuracy opening=Semi-Slav Defense url=https://lichess.org/EIvp95H5
+
+=== Repeated Position #18 ===
+Count: 2
+FEN: rnbqkb1r/ppp2ppp/4pn2/8/2pPP3/P1N5/1P3PPP/R1BQKBNR b KQkq e3 0 1
+Most common game PGN (2x): 1. d4 d5 2. c4 e6 3. a3 Nf6 4. Nc3 dxc4 5. e4 c6
+Occurrences:
+  PGN group (2x): 1. d4 d5 2. c4 e6 3. a3 Nf6 4. Nc3 dxc4 5. e4 c6 | opening=Queen's Gambit Declined (2x)
+    - game=pLip97te date=2025-10-01T23:38:46.428000+00:00 color=black move=5 san=c6 opponent=babai1953 judgment=Inaccuracy opening=Queen's Gambit Declined url=https://lichess.org/pLip97te
+    - game=7B6NiP4Z date=2025-08-07T13:54:17.257000+00:00 color=black move=5 san=c6 opponent=osamageris judgment=Inaccuracy opening=Queen's Gambit Declined url=https://lichess.org/7B6NiP4Z
+
+=== Repeated Position #19 ===
+Count: 2
+FEN: rnbqkbnr/pp1p1ppp/8/2pPp3/8/8/PPP1PPPP/RNBQKBNR w KQkq e6 0 1
+Most common game PGN (2x): 1. d4 c5 2. d5 e5 3. dxe6
+Occurrences:
+  PGN group (2x): 1. d4 c5 2. d5 e5 3. dxe6 | opening=Benoni Defense: Old Benoni (2x)
+    - game=7ibolQI0 date=2025-07-23T04:49:53.332000+00:00 color=white move=3 san=dxe6 opponent=thxAggressive judgment=Inaccuracy opening=Benoni Defense: Old Benoni url=https://lichess.org/7ibolQI0
+    - game=mQDDX4vJ date=2025-05-25T22:43:27.450000+00:00 color=white move=3 san=dxe6 opponent=evee_09 judgment=Inaccuracy opening=Benoni Defense: Old Benoni url=https://lichess.org/mQDDX4vJ
+
+=== Repeated Position #20 ===
+Count: 2
+FEN: rnbqkbnr/ppp1pp2/7p/3p2p1/3P4/6B1/PPP1PPPP/RN1QKBNR b KQkq - 0 1
+Most common game PGN (2x): 1. d4 d5 2. Bg5 h6 3. Bh4 g5 4. Bg3 f5
+Occurrences:
+  PGN group (2x): 1. d4 d5 2. Bg5 h6 3. Bh4 g5 4. Bg3 f5 | opening=Queen's Pawn Game: Levitsky Attack (2x)
+    - game=0qsYyk84 date=2025-04-13T23:19:07.412000+00:00 color=black move=4 san=f5 opponent=DeLook judgment=Inaccuracy opening=Queen's Pawn Game: Levitsky Attack url=https://lichess.org/0qsYyk84
+    - game=M886kFk0 date=2025-03-28T22:42:04.460000+00:00 color=black move=4 san=f5 opponent=lonthroposil judgment=Inaccuracy opening=Queen's Pawn Game: Levitsky Attack url=https://lichess.org/M886kFk0
+
+=== Repeated Position #21 ===
+Count: 2
+FEN: rnbqkbnr/pppppppp/8/8/5P2/8/PPPPP1PP/RNBQKBNR b KQkq f3 0 1
+Most common game PGN (2x): 1. f4 e5
+Occurrences:
+  PGN group (2x): 1. f4 e5 | opening=Bird Opening: From's Gambit (2x)
+    - game=kpeZOA1j date=2025-12-24T20:58:05.788000+00:00 color=black move=1 san=e5 opponent=fromsyogi judgment=Inaccuracy opening=Bird Opening: From's Gambit url=https://lichess.org/kpeZOA1j
+    - game=FJR2FiTH date=2025-11-14T05:40:31.867000+00:00 color=black move=1 san=e5 opponent=kamran930 judgment=Inaccuracy opening=Bird Opening: From's Gambit url=https://lichess.org/FJR2FiTH
+

@@ -26,7 +26,7 @@ import math
 import re
 import sys
 import time
-from collections import defaultdict
+from collections import defaultdict, Counter
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone, date
 from io import StringIO
@@ -45,6 +45,7 @@ DEFAULT_CONFIG_PATH = "config.yaml"
 
 
 @dataclass
+@dataclass
 class ErrorRecord:
     username: str
     game_id: str
@@ -61,6 +62,8 @@ class ErrorRecord:
     san_played: str
     fen_before: str
     normalized_fen: str
+    pgn_until_error: str
+    opening_name: Optional[str]
     comment: Optional[str]
     judgment_name: Optional[str]
     source: str
@@ -195,7 +198,7 @@ def stream_user_games(
         "finished": "true",
         "pgnInJson": "true",
         "evals": "true",
-        "opening": "false",
+        "opening": "true",
         "clocks": "false",
     }
 
@@ -330,6 +333,7 @@ def extract_first_error_from_game(
     black_name = pgn_game.headers.get("Black", "")
     result = pgn_game.headers.get("Result", "")
     event = pgn_game.headers.get("Event", "")
+    opening_name = opening_name_from_game_json_or_pgn(game_json, pgn_game)
 
     while node.variations:
         next_node = node.variation(0)
@@ -380,6 +384,8 @@ def extract_first_error_from_game(
                         source="analysis_cpl",
                         cpl=cpl,
                         threshold_used=from_cpl,
+                        pgn_until_error=build_pgn_until_ply(pgn_game, ply_index),
+                        opening_name=opening_name,
                     )
 
             elif from_cpl == 0:
@@ -411,6 +417,8 @@ def extract_first_error_from_game(
                             source="analysis",
                             cpl=None,
                             threshold_used=None,
+                            opening_name=opening_name,
+                            pgn_until_error=build_pgn_until_ply(pgn_game, ply_index),
                         )
 
                 comment_text = (next_node.comment or "").strip()
@@ -455,6 +463,8 @@ def extract_first_error_from_game(
                         source="pgn_nag" if nags else "pgn_comment",
                         cpl=None,
                         threshold_used=None,
+                        opening_name=opening_name,
+                        pgn_until_error=build_pgn_until_ply(pgn_game, ply_index),
                     )
 
         board.push(move)
@@ -471,6 +481,64 @@ def write_jsonl(path: Path, records: Iterable[ErrorRecord]) -> None:
         for record in records:
             f.write(json.dumps(asdict(record), ensure_ascii=False) + "\n")
 
+def most_common_pgn(records: List[ErrorRecord]) -> Tuple[str, int]:
+    """
+    Returns (most_common_pgn, count). Ties are broken lexicographically for stability.
+    """
+    counter = Counter(rec.pgn_until_error for rec in records)
+    if not counter:
+        return "", 0
+
+    best_count = max(counter.values())
+    best_pgns = sorted(pgn for pgn, count in counter.items() if count == best_count)
+    best_pgn = best_pgns[0]
+    return best_pgn, best_count
+
+def build_pgn_until_ply(game: chess.pgn.Game, target_ply: int) -> str:
+    """
+    Return SAN move text up to and including target_ply.
+    Example: '1. e4 e5 2. Nf3'
+    """
+    if target_ply <= 0:
+        return ""
+
+    board = game.board()
+    node = game
+    parts: List[str] = []
+    ply_index = 0
+
+    while node.variations and ply_index < target_ply:
+        next_node = node.variation(0)
+        move = next_node.move
+        san = board.san(move)
+
+        if board.turn == chess.WHITE:
+            parts.append(f"{board.fullmove_number}. {san}")
+        else:
+            parts.append(san)
+
+        board.push(move)
+        node = next_node
+        ply_index += 1
+
+    return " ".join(parts)
+
+
+def opening_name_from_game_json_or_pgn(game_json: Dict[str, Any], pgn_game: chess.pgn.Game) -> Optional[str]:
+    """
+    Prefer JSON opening field if present, fall back to PGN Opening tag.
+    """
+    opening = game_json.get("opening")
+    if isinstance(opening, dict):
+        name = opening.get("name")
+        if name:
+            return str(name)
+
+    tag_name = pgn_game.headers.get("Opening")
+    if tag_name:
+        return tag_name
+
+    return None
 
 def write_repeated_txt(path: Path, grouped: Dict[str, List[ErrorRecord]]) -> None:
     repeated_items = [(fen, recs) for fen, recs in grouped.items() if len(recs) > 1]
@@ -482,24 +550,46 @@ def write_repeated_txt(path: Path, grouped: Dict[str, List[ErrorRecord]]) -> Non
             return
 
         for idx, (fen, recs) in enumerate(repeated_items, start=1):
+            common_pgn, common_pgn_count = most_common_pgn(recs)
+
             f.write(f"=== Repeated Position #{idx} ===\n")
             f.write(f"Count: {len(recs)}\n")
             f.write(f"FEN: {fen}\n")
+            f.write(f"Most common game PGN ({common_pgn_count}x): {common_pgn}\n")
             f.write("Occurrences:\n")
+
+            # Group occurrences by PGN for easier reading while keeping total tallies.
+            pgn_buckets: Dict[str, List[ErrorRecord]] = defaultdict(list)
             for rec in recs:
-                extra = ""
-                if rec.cpl is not None:
-                    extra = f" cpl={rec.cpl}"
-                elif rec.judgment_name:
-                    extra = f" judgment={rec.judgment_name}"
-                f.write(
-                    f"  - game={rec.game_id} date={rec.played_at_utc or 'unknown'} "
-                    f"color={rec.color} move={rec.move_number} san={rec.san_played} "
-                    f"opponent={rec.opponent}{extra} url={rec.game_url}\n"
+                pgn_buckets[rec.pgn_until_error].append(rec)
+
+            for pgn_line in sorted(pgn_buckets.keys(), key=lambda p: (-len(pgn_buckets[p]), p)):
+                bucket = pgn_buckets[pgn_line]
+                opening_counter = Counter(
+                    rec.opening_name for rec in bucket if rec.opening_name
                 )
+                opening_summary = ""
+                if opening_counter:
+                    opening_name, opening_count = opening_counter.most_common(1)[0]
+                    opening_summary = f" | opening={opening_name} ({opening_count}x)"
+
+                f.write(f"  PGN group ({len(bucket)}x): {pgn_line}{opening_summary}\n")
+
+                for rec in bucket:
+                    extra = ""
+                    if rec.cpl is not None:
+                        extra = f" cpl={rec.cpl}"
+                    elif rec.judgment_name:
+                        extra = f" judgment={rec.judgment_name}"
+
+                    opening_part = f" opening={rec.opening_name}" if rec.opening_name else ""
+                    f.write(
+                        f"    - game={rec.game_id} date={rec.played_at_utc or 'unknown'} "
+                        f"color={rec.color} move={rec.move_number} san={rec.san_played} "
+                        f"opponent={rec.opponent}{extra}{opening_part} url={rec.game_url}\n"
+                    )
+
             f.write("\n")
-
-
 def timestamp_affix() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
