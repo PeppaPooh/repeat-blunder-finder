@@ -33,6 +33,9 @@ from io import StringIO
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Set, Tuple
 
+import shlex
+from dataclasses import asdict, dataclass, fields
+
 import chess
 import chess.pgn
 import requests
@@ -45,6 +48,14 @@ DEFAULT_CONFIG_PATH = "config.yaml"
 
 
 @dataclass
+class GenerationMetadata:
+    generated_at_utc: str
+    generated_at_human: str
+    command: str
+    params: Dict[str, Any]
+
+
+
 @dataclass
 class ErrorRecord:
     username: str
@@ -78,6 +89,56 @@ def setup_logging(verbose: bool) -> None:
         format="%(asctime)s | %(levelname)s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
+
+
+def now_utc() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def human_timestamp(dt: datetime) -> str:
+    return dt.astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
+
+
+def iso_utc(dt: datetime) -> str:
+    return dt.astimezone(timezone.utc).isoformat()
+
+
+def build_command_string(argv: List[str]) -> str:
+    return " ".join(shlex.quote(arg) for arg in argv)
+
+
+def build_effective_params(
+    username: str,
+    since_input: Any,
+    max_fullmoves: int,
+    from_cpl: int,
+    ignore_fens: Set[str],
+    config_path: str,
+    token_used: bool,
+    use_save: Optional[str],
+) -> Dict[str, Any]:
+    return {
+        "username": username,
+        "since": str(since_input),
+        "max_fullmoves": max_fullmoves,
+        "from_cpl": from_cpl,
+        "ignore_positions_normalized": sorted(ignore_fens),
+        "config_path": config_path,
+        "token_used": token_used,
+        "use_save": use_save,
+    }
+
+
+def params_for_cache_comparison(params: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Fields that must match for cached JSONL reuse to be safe, excluding time coverage.
+    """
+    return {
+        "username": params.get("username"),
+        "max_fullmoves": params.get("max_fullmoves"),
+        "from_cpl": params.get("from_cpl"),
+        "ignore_positions_normalized": params.get("ignore_positions_normalized", []),
+    }
 
 
 def parse_args() -> argparse.Namespace:
@@ -131,6 +192,15 @@ def parse_args() -> argparse.Namespace:
         "--verbose",
         action="store_true",
         help="Enable debug logging",
+    )
+    parser.add_argument(
+        "--use-save",
+        default=None,
+        help=(
+            "Path to a prior blunder_positions_*.jsonl file to reuse if generation "
+            "params match. If fully covering the requested time range, no new JSONL "
+            "is written. If partially covering, only missing time range is fetched."
+        ),
     )
     return parser.parse_args()
 
@@ -476,8 +546,9 @@ def extract_first_error_from_game(
     return None
 
 
-def write_jsonl(path: Path, records: Iterable[ErrorRecord]) -> None:
+def write_jsonl(path: Path, metadata: GenerationMetadata, records: Iterable[ErrorRecord]) -> None:
     with path.open("w", encoding="utf-8") as f:
+        f.write(json.dumps({"_meta": asdict(metadata)}, ensure_ascii=False) + "\n")
         for record in records:
             f.write(json.dumps(asdict(record), ensure_ascii=False) + "\n")
 
@@ -540,11 +611,24 @@ def opening_name_from_game_json_or_pgn(game_json: Dict[str, Any], pgn_game: ches
 
     return None
 
-def write_repeated_txt(path: Path, grouped: Dict[str, List[ErrorRecord]]) -> None:
+def write_repeated_txt(
+    path: Path,
+    grouped: Dict[str, List[ErrorRecord]],
+    metadata: GenerationMetadata,
+) -> None:
     repeated_items = [(fen, recs) for fen, recs in grouped.items() if len(recs) > 1]
     repeated_items.sort(key=lambda item: (-len(item[1]), item[0]))
 
     with path.open("w", encoding="utf-8") as f:
+        f.write("=== Generation Metadata ===\n")
+        f.write(f"Generated at (human): {metadata.generated_at_human}\n")
+        f.write(f"Generated at (UTC): {metadata.generated_at_utc}\n")
+        f.write(f"Command: {metadata.command}\n")
+        f.write("Params:\n")
+        for key, value in metadata.params.items():
+            f.write(f"  {key}: {value}\n")
+        f.write("\n")
+
         if not repeated_items:
             f.write("No repeated early error positions were found.\n")
             return
@@ -552,13 +636,24 @@ def write_repeated_txt(path: Path, grouped: Dict[str, List[ErrorRecord]]) -> Non
         for idx, (fen, recs) in enumerate(repeated_items, start=1):
             common_pgn, common_pgn_count = most_common_pgn(recs)
 
+            common_pgn_records = [rec for rec in recs if rec.pgn_until_error == common_pgn]
+            common_opening_counter = Counter(
+                rec.opening_name for rec in common_pgn_records if rec.opening_name
+            )
+            common_opening_text = ""
+            if common_opening_counter:
+                opening_name, opening_count = common_opening_counter.most_common(1)[0]
+                common_opening_text = f" | opening={opening_name} ({opening_count}x)"
+
             f.write(f"=== Repeated Position #{idx} ===\n")
             f.write(f"Count: {len(recs)}\n")
             f.write(f"FEN: {fen}\n")
-            f.write(f"Most common game PGN ({common_pgn_count}x): {common_pgn}\n")
+            f.write(
+                f"Most common game PGN ({common_pgn_count}x): "
+                f"{common_pgn}{common_opening_text}\n"
+            )
             f.write("Occurrences:\n")
 
-            # Group occurrences by PGN for easier reading while keeping total tallies.
             pgn_buckets: Dict[str, List[ErrorRecord]] = defaultdict(list)
             for rec in recs:
                 pgn_buckets[rec.pgn_until_error].append(rec)
@@ -590,6 +685,232 @@ def write_repeated_txt(path: Path, grouped: Dict[str, List[ErrorRecord]]) -> Non
                     )
 
             f.write("\n")
+
+def load_saved_jsonl(path: Path) -> Tuple[Optional[GenerationMetadata], List[ErrorRecord]]:
+    if not path.exists():
+        raise FileNotFoundError(f"Saved JSONL not found: {path}")
+
+    metadata: Optional[GenerationMetadata] = None
+    records: List[ErrorRecord] = []
+
+    with path.open("r", encoding="utf-8") as f:
+        for line_no, line in enumerate(f, start=1):
+            line = line.strip()
+            if not line:
+                continue
+
+            obj = json.loads(line)
+
+            if line_no == 1 and isinstance(obj, dict) and "_meta" in obj:
+                raw_meta = obj["_meta"]
+                metadata = GenerationMetadata(
+                    generated_at_utc=raw_meta["generated_at_utc"],
+                    generated_at_human=raw_meta["generated_at_human"],
+                    command=raw_meta["command"],
+                    params=raw_meta["params"],
+                )
+                continue
+
+            record_field_names = {field.name for field in fields(ErrorRecord)}
+            filtered = {k: v for k, v in obj.items() if k in record_field_names}
+            records.append(ErrorRecord(**filtered))
+
+    return metadata, records
+
+def parse_iso_datetime(value: str) -> datetime:
+    return datetime.fromisoformat(value)
+
+
+def saved_file_can_be_reused(
+    saved_meta: Optional[GenerationMetadata],
+    current_params: Dict[str, Any],
+) -> bool:
+    if saved_meta is None:
+        return False
+
+    return params_for_cache_comparison(saved_meta.params) == params_for_cache_comparison(current_params)
+
+
+def get_saved_since(saved_meta: GenerationMetadata) -> Any:
+    return saved_meta.params.get("since")
+
+
+def filter_records_by_since(records: List[ErrorRecord], since_ms: int) -> List[ErrorRecord]:
+    kept: List[ErrorRecord] = []
+    for rec in records:
+        if not rec.played_at_utc:
+            continue
+        try:
+            rec_dt = datetime.fromisoformat(rec.played_at_utc)
+        except ValueError:
+            continue
+        if int(rec_dt.timestamp() * 1000) >= since_ms:
+            kept.append(rec)
+    return kept
+
+
+def dedupe_records(records: List[ErrorRecord]) -> List[ErrorRecord]:
+    seen = set()
+    out: List[ErrorRecord] = []
+    for rec in records:
+        key = (
+            rec.game_id,
+            rec.ply_index,
+            rec.normalized_fen,
+            rec.pgn_until_error,
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(rec)
+    return out
+
+def stream_user_games(
+    username: str,
+    since_ms: int,
+    token: Optional[str],
+    timeout: int,
+    until_ms: Optional[int] = None,
+) -> Iterator[Dict[str, Any]]:
+    url = API_URL_TEMPLATE.format(username=username)
+    params = {
+        "since": since_ms,
+        "analysed": "true",
+        "finished": "true",
+        "pgnInJson": "true",
+        "evals": "true",
+        "opening": "true",
+        "clocks": "false",
+    }
+    if until_ms is not None:
+        params["until"] = until_ms
+
+    session = requests.Session()
+    headers = lichess_headers(token)
+
+    while True:
+        logging.info(
+            "Requesting games from Lichess for %s since %s ms%s",
+            username,
+            since_ms,
+            f" until {until_ms} ms" if until_ms is not None else "",
+        )
+        with session.get(url, headers=headers, params=params, stream=True, timeout=timeout) as resp:
+            if resp.status_code == 429:
+                logging.warning("Received HTTP 429 from Lichess. Sleeping 60 seconds before retry.")
+                time.sleep(60)
+                continue
+
+            try:
+                resp.raise_for_status()
+            except requests.HTTPError as exc:
+                raise RuntimeError(
+                    f"Lichess API request failed: HTTP {resp.status_code} - {resp.text[:500]}"
+                ) from exc
+
+            for raw_line in resp.iter_lines(decode_unicode=True):
+                if not raw_line:
+                    continue
+                yield json.loads(raw_line)
+            break
+
+def collect_records_from_stream(
+    games_iter: Iterable[Dict[str, Any]],
+    username: str,
+    max_fullmoves: int,
+    from_cpl: int,
+    ignore_fens: Set[str],
+    log_every: int,
+    initial_processed: int = 0,
+    initial_standard: int = 0,
+    initial_found: int = 0,
+    initial_ignored: int = 0,
+    initial_duplicates: int = 0,
+    seen_game_ids: Optional[Set[str]] = None,
+) -> Tuple[List[ErrorRecord], Dict[str, int], Set[str]]:
+    processed = initial_processed
+    standard_games = initial_standard
+    found_errors = initial_found
+    ignored_matches = initial_ignored
+    skipped_duplicates = initial_duplicates
+    seen_game_ids = seen_game_ids or set()
+
+    records: List[ErrorRecord] = []
+
+    for game_json in games_iter:
+        processed += 1
+        game_id = game_json.get("id")
+
+        if game_id in seen_game_ids:
+            skipped_duplicates += 1
+            logging.debug("Skipping duplicate game id %s", game_id)
+            continue
+        seen_game_ids.add(game_id)
+
+        if (game_json.get("variant") or "").lower() != "standard":
+            if processed % log_every == 0:
+                logging.info(
+                    "Progress: processed=%d standard=%d found=%d ignored=%d duplicates=%d",
+                    processed,
+                    standard_games,
+                    found_errors,
+                    ignored_matches,
+                    skipped_duplicates,
+                )
+            continue
+
+        standard_games += 1
+
+        record = extract_first_error_from_game(
+            game_json=game_json,
+            username=username,
+            max_fullmoves=max_fullmoves,
+            from_cpl=from_cpl,
+        )
+
+        if record is not None:
+            if record.normalized_fen in ignore_fens:
+                ignored_matches += 1
+                logging.info(
+                    "Ignored configured position: game=%s move=%d fen=%s",
+                    record.game_id,
+                    record.move_number,
+                    record.normalized_fen,
+                )
+            else:
+                found_errors += 1
+                logging.info(
+                    "Found early error: game=%s move=%d color=%s san=%s source=%s judgment=%s cpl=%s fen=%s",
+                    record.game_id,
+                    record.move_number,
+                    record.color,
+                    record.san_played,
+                    record.source,
+                    record.judgment_name,
+                    record.cpl,
+                    record.normalized_fen,
+                )
+                records.append(record)
+
+        if processed % log_every == 0:
+            logging.info(
+                "Progress: processed=%d standard=%d found=%d ignored=%d duplicates=%d",
+                processed,
+                standard_games,
+                found_errors,
+                ignored_matches,
+                skipped_duplicates,
+            )
+
+    stats = {
+        "processed": processed,
+        "standard_games": standard_games,
+        "found_errors": found_errors,
+        "ignored_matches": ignored_matches,
+        "skipped_duplicates": skipped_duplicates,
+    }
+    return records, stats, seen_game_ids
+
 def timestamp_affix() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
@@ -694,19 +1015,38 @@ def main() -> int:
     setup_logging(args.verbose)
 
     config = load_config(args.config)
-    username, since_str, ignore_fens = resolve_runtime_settings(args, config)
+    username, since_input, ignore_fens = resolve_runtime_settings(args, config)
 
-    since_ms = yyyy_mm_dd_to_epoch_ms(since_str)
+    current_run_dt = now_utc()
+    since_ms = yyyy_mm_dd_to_epoch_ms(since_input)
     jsonl_dir, txt_dir = ensure_output_dirs()
     stamp = timestamp_affix()
 
     jsonl_path = jsonl_dir / f"blunder_positions_{stamp}.jsonl"
     repeated_txt_path = txt_dir / f"repeated_blunder_positions_{stamp}.txt"
 
+    effective_params = build_effective_params(
+        username=username,
+        since_input=since_input,
+        max_fullmoves=args.max_fullmoves,
+        from_cpl=args.from_cpl,
+        ignore_fens=ignore_fens,
+        config_path=args.config,
+        token_used=bool(args.token),
+        use_save=args.use_save,
+    )
+
+    metadata = GenerationMetadata(
+        generated_at_utc=iso_utc(current_run_dt),
+        generated_at_human=human_timestamp(current_run_dt),
+        command=build_command_string(sys.argv),
+        params=effective_params,
+    )
+
     logging.info(
         "Starting scan for user=%s since=%s (epoch_ms=%d), max_fullmoves=%d, from_cpl=%d",
         username,
-        since_str,
+        str(since_input),
         since_ms,
         args.max_fullmoves,
         args.from_cpl,
@@ -718,88 +1058,136 @@ def main() -> int:
         logging.info("Mode: centipawn loss threshold >= %d", args.from_cpl)
 
     logging.info("Ignoring %d configured position(s).", len(ignore_fens))
-    logging.info("JSONL output will be written to: %s", jsonl_path.resolve())
     logging.info("TXT report will be written to: %s", repeated_txt_path.resolve())
 
-    processed = 0
-    standard_games = 0
-    found_errors = 0
-    ignored_matches = 0
-    skipped_duplicates = 0
-    seen_game_ids = set()
-
-    records: List[ErrorRecord] = []
+    all_records: List[ErrorRecord] = []
+    write_new_jsonl = True
+    stats = {
+        "processed": 0,
+        "standard_games": 0,
+        "found_errors": 0,
+        "ignored_matches": 0,
+        "skipped_duplicates": 0,
+    }
+    seen_game_ids: Set[str] = set()
 
     try:
-        for game_json in stream_user_games(
-            username=username,
-            since_ms=since_ms,
-            token=args.token,
-            timeout=args.timeout,
-        ):
-            processed += 1
-            game_id = game_json.get("id")
+        reused_records: List[ErrorRecord] = []
+        saved_meta: Optional[GenerationMetadata] = None
 
-            if game_id in seen_game_ids:
-                skipped_duplicates += 1
-                logging.debug("Skipping duplicate game id %s", game_id)
-                continue
-            seen_game_ids.add(game_id)
+        if args.use_save:
+            save_path = Path(args.use_save)
+            logging.info("Attempting to reuse saved JSONL: %s", save_path.resolve())
+            saved_meta, saved_records = load_saved_jsonl(save_path)
 
-            if (game_json.get("variant") or "").lower() != "standard":
-                if processed % args.log_every == 0:
+            if not saved_file_can_be_reused(saved_meta, effective_params):
+                logging.info("Saved JSONL params do not match current run. Ignoring cache.")
+            else:
+                saved_since_input = get_saved_since(saved_meta)
+                saved_since_ms = yyyy_mm_dd_to_epoch_ms(saved_since_input)
+                saved_generated_until_ms = int(parse_iso_datetime(saved_meta.generated_at_utc).timestamp() * 1000)
+
+                if saved_since_ms <= since_ms:
+                    # Saved file starts earlier or equal. Filter it down to requested lower bound.
+                    reused_records = filter_records_by_since(saved_records, since_ms)
+
+                    # Full coverage only if we accept saved upper bound as current upper bound.
+                    # In practice, to avoid stale silent reuse, only fully reuse if generated "now enough".
+                    # Here we define full reuse strictly as: no additional upper bound requested beyond saved run time.
+                    # Since this script always means "up to now", a saved file can never fully cover a later current time.
+                    # So we still fetch from saved_generated_until_ms onward.
                     logging.info(
-                        "Progress: processed=%d standard=%d found=%d ignored=%d duplicates=%d",
-                        processed,
-                        standard_games,
-                        found_errors,
-                        ignored_matches,
-                        skipped_duplicates,
+                        "Saved JSONL matches params and covers requested lower bound. "
+                        "Will reuse %d records and fetch newer games since saved generation time.",
+                        len(reused_records),
                     )
-                continue
 
-            standard_games += 1
+                    new_records, stats, seen_game_ids = collect_records_from_stream(
+                        games_iter=stream_user_games(
+                            username=username,
+                            since_ms=saved_generated_until_ms,
+                            token=args.token,
+                            timeout=args.timeout,
+                            until_ms=None,
+                        ),
+                        username=username,
+                        max_fullmoves=args.max_fullmoves,
+                        from_cpl=args.from_cpl,
+                        ignore_fens=ignore_fens,
+                        log_every=args.log_every,
+                        seen_game_ids=set(rec.game_id for rec in reused_records),
+                    )
+                    all_records = dedupe_records(reused_records + new_records)
 
-            record = extract_first_error_from_game(
-                game_json=game_json,
+                elif saved_since_ms > since_ms:
+                    logging.info(
+                        "Saved JSONL is a subset of requested range. "
+                        "Will reuse %d saved records and fetch older missing range [%s, %s).",
+                        len(saved_records),
+                        str(since_input),
+                        str(saved_since_input),
+                    )
+
+                    reused_records = saved_records
+
+                    older_records, stats, seen_game_ids = collect_records_from_stream(
+                        games_iter=stream_user_games(
+                            username=username,
+                            since_ms=since_ms,
+                            until_ms=saved_since_ms,
+                            token=args.token,
+                            timeout=args.timeout,
+                        ),
+                        username=username,
+                        max_fullmoves=args.max_fullmoves,
+                        from_cpl=args.from_cpl,
+                        ignore_fens=ignore_fens,
+                        log_every=args.log_every,
+                        seen_game_ids=set(rec.game_id for rec in reused_records),
+                    )
+                    all_records = dedupe_records(older_records + reused_records)
+
+                if not all_records and reused_records:
+                    all_records = dedupe_records(reused_records)
+
+                # Decide whether to write a new JSONL.
+                # If nothing new was fetched and saved file fully satisfied current request, skip writing.
+                # Because the request's implicit upper bound is "now", true full coverage is only possible
+                # if the saved file was generated in this same instant, which is unrealistic.
+                # So here: skip writing only when current command explicitly chooses to trust saved file as-is
+                # and no fetch was necessary. That happens when current "now" is effectively accepted as saved upper bound.
+                #
+                # For practical behavior, if saved_since_ms == since_ms and the user reuses save immediately,
+                # you may still want no new JSONL. We use a small freshness window.
+                if saved_meta and saved_file_can_be_reused(saved_meta, effective_params):
+                    saved_generated_dt = parse_iso_datetime(saved_meta.generated_at_utc)
+                    age_seconds = (current_run_dt - saved_generated_dt).total_seconds()
+
+                    if saved_since_ms == since_ms and age_seconds <= 60:
+                        logging.info(
+                            "Saved JSONL fully reused (fresh within 60s). No new blunder_positions JSONL will be written."
+                        )
+                        write_new_jsonl = False
+                        all_records = dedupe_records(reused_records if reused_records else saved_records)
+
+        if not args.use_save or not all_records:
+            logging.info("Fetching all data from Lichess.")
+            fetched_records, stats, seen_game_ids = collect_records_from_stream(
+                games_iter=stream_user_games(
+                    username=username,
+                    since_ms=since_ms,
+                    token=args.token,
+                    timeout=args.timeout,
+                    until_ms=None,
+                ),
                 username=username,
                 max_fullmoves=args.max_fullmoves,
                 from_cpl=args.from_cpl,
+                ignore_fens=ignore_fens,
+                log_every=args.log_every,
+                seen_game_ids=set(),
             )
-
-            if record is not None:
-                if record.normalized_fen in ignore_fens:
-                    ignored_matches += 1
-                    logging.info(
-                        "Ignored configured position: game=%s move=%d fen=%s",
-                        record.game_id,
-                        record.move_number,
-                        record.normalized_fen,
-                    )
-                else:
-                    found_errors += 1
-                    logging.info(
-                        "Found early error: game=%s move=%d color=%s san=%s source=%s judgment=%s cpl=%s fen=%s",
-                        record.game_id,
-                        record.move_number,
-                        record.color,
-                        record.san_played,
-                        record.source,
-                        record.judgment_name,
-                        record.cpl,
-                        record.normalized_fen,
-                    )
-                    records.append(record)
-
-            if processed % args.log_every == 0:
-                logging.info(
-                    "Progress: processed=%d standard=%d found=%d ignored=%d duplicates=%d",
-                    processed,
-                    standard_games,
-                    found_errors,
-                    ignored_matches,
-                    skipped_duplicates,
-                )
+            all_records = dedupe_records(fetched_records)
 
     except KeyboardInterrupt:
         logging.warning("Interrupted by user. Writing partial results.")
@@ -808,21 +1196,27 @@ def main() -> int:
         return 1
 
     grouped: Dict[str, List[ErrorRecord]] = defaultdict(list)
-    for rec in records:
+    for rec in all_records:
         grouped[rec.normalized_fen].append(rec)
 
-    write_jsonl(jsonl_path, records)
-    write_repeated_txt(repeated_txt_path, grouped)
+    if write_new_jsonl:
+        logging.info("JSONL output will be written to: %s", jsonl_path.resolve())
+        write_jsonl(jsonl_path, metadata, all_records)
+    else:
+        logging.info("Skipping new JSONL generation because saved JSONL fully satisfied the request.")
+
+    write_repeated_txt(repeated_txt_path, grouped, metadata)
 
     repeated_count = sum(1 for recs in grouped.values() if len(recs) > 1)
 
     logging.info("Done.")
-    logging.info("Processed total games: %d", processed)
-    logging.info("Standard games checked: %d", standard_games)
-    logging.info("Error positions stored: %d", len(records))
-    logging.info("Ignored configured matches: %d", ignored_matches)
+    logging.info("Processed total games: %d", stats["processed"])
+    logging.info("Standard games checked: %d", stats["standard_games"])
+    logging.info("Error positions stored: %d", len(all_records))
+    logging.info("Ignored configured matches: %d", stats["ignored_matches"])
     logging.info("Repeated error positions found: %d", repeated_count)
-    logging.info("JSONL output: %s", jsonl_path.resolve())
+    if write_new_jsonl:
+        logging.info("JSONL output: %s", jsonl_path.resolve())
     logging.info("TXT output: %s", repeated_txt_path.resolve())
 
     return 0
