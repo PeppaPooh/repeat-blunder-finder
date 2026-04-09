@@ -1,0 +1,440 @@
+=== Repeated Position #1 ===
+Count: 15
+FEN: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
+Occurrences:
+  - game=0P4VXE33 date=2024-02-07T02:01:40.925000+00:00 color=black move=1 san=b6 opponent=Vishwavenu judgment=Inaccuracy url=https://lichess.org/0P4VXE33
+  - game=zc0GOFcY date=2024-02-06T23:51:07.655000+00:00 color=black move=1 san=b6 opponent=SamMov56 judgment=Inaccuracy url=https://lichess.org/zc0GOFcY
+  - game=XRmBptXr date=2024-01-30T02:07:19.690000+00:00 color=black move=1 san=d5 opponent=maia1 judgment=Inaccuracy url=https://lichess.org/XRmBptXr
+  - game=jQ1VG4po date=2024-01-25T00:27:42.035000+00:00 color=black move=1 san=b6 opponent=paozinho judgment=Inaccuracy url=https://lichess.org/jQ1VG4po
+  - game=Fb8jjuwn date=2024-01-24T21:00:55.741000+00:00 color=black move=1 san=d5 opponent=Alainpascal judgment=Inaccuracy url=https://lichess.org/Fb8jjuwn
+  - game=hjWwTM46 date=2024-01-18T21:00:27.883000+00:00 color=black move=1 san=b6 opponent=maia1 judgment=Inaccuracy url=https://lichess.org/hjWwTM46
+  - game=92xu9xfp date=2024-01-18T04:12:52.104000+00:00 color=black move=1 san=d5 opponent=sterlingg judgment=Inaccuracy url=https://lichess.org/92xu9xfp
+  - game=M1SJUlgz date=2024-01-17T04:06:36.524000+00:00 color=black move=1 san=d5 opponent=ThomasQ28 judgment=Inaccuracy url=https://lichess.org/M1SJUlgz
+  - game=3H03W8fB date=2024-01-11T19:54:58.644000+00:00 color=black move=1 san=d5 opponent=imamoose judgment=Inaccuracy url=https://lichess.org/3H03W8fB
+  - game=XouwDGyd date=2024-01-11T18:49:44.534000+00:00 color=black move=1 san=d5 opponent=Eslem99 judgment=Inaccuracy url=https://lichess.org/XouwDGyd
+  - game=f6qr8VYG date=2024-01-11T18:18:15.048000+00:00 color=black move=1 san=d5 opponent=Digy91 judgment=Inaccuracy url=https://lichess.org/f6qr8VYG
+  - game=5FPo5w8i date=2024-01-09T03:37:36.642000+00:00 color=black move=1 san=d5 opponent=samuelkinggg judgment=Inaccuracy url=https://lichess.org/5FPo5w8i
+  - game=VXfMeEvo date=2024-01-08T20:35:32.492000+00:00 color=black move=1 san=d5 opponent=Almutasin judgment=Inaccuracy url=https://lichess.org/VXfMeEvo
+  - game=Nlv1b6eD date=2024-01-03T20:53:20.554000+00:00 color=black move=1 san=d5 opponent=jihyeok0103 judgment=Inaccuracy url=https://lichess.org/Nlv1b6eD
+  - game=XbRZcK6X date=2024-01-01T00:21:33.896000+00:00 color=black move=1 san=d5 opponent=A--A judgment=Inaccuracy url=https://lichess.org/XbRZcK6X
+
+=== Repeated Position #2 ===
+Count: 11
+FEN: rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 1
+Occurrences:
+  - game=xG9jlpw9 date=2025-11-22T23:17:40.829000+00:00 color=black move=1 san=e5 opponent=Petiteflatdeng judgment=Inaccuracy url=https://lichess.org/xG9jlpw9
+  - game=pfzT8f2y date=2025-09-24T00:05:12.905000+00:00 color=black move=1 san=e5 opponent=Samartino judgment=Inaccuracy url=https://lichess.org/pfzT8f2y
+  - game=ECQyzzz6 date=2024-12-16T00:52:57.188000+00:00 color=black move=1 san=e5 opponent=FridaKahlo03 judgment=Inaccuracy url=https://lichess.org/ECQyzzz6
+  - game=wQTO3z8D date=2024-12-08T07:30:21.111000+00:00 color=black move=1 san=e5 opponent=zunggg judgment=Inaccuracy url=https://lichess.org/wQTO3z8D
+  - game=ZXT2krry date=2024-11-21T16:40:57+00:00 color=black move=1 san=e5 opponent=Toepie74 judgment=Inaccuracy url=https://lichess.org/ZXT2krry
+  - game=RI7Htf5D date=2024-04-17T13:36:30.799000+00:00 color=black move=1 san=e5 opponent=unknown judgment=Inaccuracy url=https://lichess.org/RI7Htf5D
+  - game=EkNQurFy date=2024-04-12T15:23:50.174000+00:00 color=black move=1 san=e5 opponent=unknown judgment=Mistake url=https://lichess.org/EkNQurFy
+  - game=VpOP3zNw date=2024-01-25T22:09:59.342000+00:00 color=black move=1 san=b6 opponent=VitaliDudnik judgment=Inaccuracy url=https://lichess.org/VpOP3zNw
+  - game=6xTSVuO6 date=2024-01-23T03:25:08.781000+00:00 color=black move=1 san=b6 opponent=Mohamed312004 judgment=Inaccuracy url=https://lichess.org/6xTSVuO6
+  - game=eJLXZXpM date=2024-01-19T03:35:03.514000+00:00 color=black move=1 san=b6 opponent=unknown judgment=Inaccuracy url=https://lichess.org/eJLXZXpM
+  - game=MtOZVAnt date=2024-01-18T17:45:44.579000+00:00 color=black move=1 san=b6 opponent=Malte1204 judgment=Inaccuracy url=https://lichess.org/MtOZVAnt
+
+=== Repeated Position #3 ===
+Count: 10
+FEN: rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 0 1
+Occurrences:
+  - game=0O0tsdFr date=2026-02-18T14:30:34.614000+00:00 color=black move=2 san=f5 opponent=unknown judgment=Mistake url=https://lichess.org/0O0tsdFr
+  - game=m8GV8Pyi date=2025-10-10T05:57:58.242000+00:00 color=black move=2 san=f5 opponent=SteveAscic judgment=Mistake url=https://lichess.org/m8GV8Pyi
+  - game=KGkioFuW date=2025-09-24T00:16:12.130000+00:00 color=black move=2 san=f5 opponent=Samartino judgment=Mistake url=https://lichess.org/KGkioFuW
+  - game=zkL5bLgR date=2024-10-18T16:04:21.059000+00:00 color=black move=2 san=f5 opponent=xouillet judgment=Inaccuracy url=https://lichess.org/zkL5bLgR
+  - game=vOeX4AG5 date=2024-09-06T11:50:14.469000+00:00 color=black move=2 san=f5 opponent=unknown judgment=Mistake url=https://lichess.org/vOeX4AG5
+  - game=aYcEM7Z4 date=2024-08-15T07:36:04.812000+00:00 color=black move=2 san=f5 opponent=Ded_Yuriy judgment=Mistake url=https://lichess.org/aYcEM7Z4
+  - game=Tn219GeN date=2024-08-11T14:54:35.651000+00:00 color=black move=2 san=f5 opponent=unknown judgment=Mistake url=https://lichess.org/Tn219GeN
+  - game=aPx8m7fJ date=2024-07-13T09:59:44.122000+00:00 color=black move=2 san=f5 opponent=KHWHITEROCK judgment=Mistake url=https://lichess.org/aPx8m7fJ
+  - game=e2VpolNN date=2024-07-13T08:39:14.731000+00:00 color=black move=2 san=f5 opponent=Peimanbas judgment=Mistake url=https://lichess.org/e2VpolNN
+  - game=WZbig7Uu date=2024-07-13T08:06:02.664000+00:00 color=black move=2 san=f5 opponent=chacka6 judgment=Mistake url=https://lichess.org/WZbig7Uu
+
+=== Repeated Position #4 ===
+Count: 9
+FEN: rnbqkb1r/ppp1pppp/5n2/3P4/2P5/8/PP1P1PPP/RNBQKBNR b KQkq c3 0 1
+Occurrences:
+  - game=8aaSzxAY date=2025-10-20T04:45:42.940000+00:00 color=black move=3 san=e5 opponent=sayedzakarya judgment=Inaccuracy url=https://lichess.org/8aaSzxAY
+  - game=UX7NxEUR date=2024-04-03T19:33:18.165000+00:00 color=black move=3 san=e6 opponent=ALEMASSI judgment=Inaccuracy url=https://lichess.org/UX7NxEUR
+  - game=ltG78qTY date=2024-03-22T19:30:18.838000+00:00 color=black move=3 san=e6 opponent=Grehom judgment=Inaccuracy url=https://lichess.org/ltG78qTY
+  - game=xwbSxIgh date=2024-03-22T19:09:34.298000+00:00 color=black move=3 san=e6 opponent=SilberGogo judgment=Inaccuracy url=https://lichess.org/xwbSxIgh
+  - game=LEN1iCxj date=2024-03-18T18:59:10.853000+00:00 color=black move=3 san=e6 opponent=joh4nnes judgment=Inaccuracy url=https://lichess.org/LEN1iCxj
+  - game=SgkahNZm date=2024-03-15T19:25:03.967000+00:00 color=black move=3 san=e6 opponent=PawnProwler judgment=Inaccuracy url=https://lichess.org/SgkahNZm
+  - game=NlEcBklZ date=2024-03-05T20:53:46.382000+00:00 color=black move=3 san=e6 opponent=kolyae2e4 judgment=Inaccuracy url=https://lichess.org/NlEcBklZ
+  - game=Jb48LZaH date=2024-02-21T22:38:51.166000+00:00 color=black move=3 san=e6 opponent=Moaaz_younes22 judgment=Inaccuracy url=https://lichess.org/Jb48LZaH
+  - game=jqpH3vLn date=2024-02-16T07:42:49.714000+00:00 color=black move=3 san=e6 opponent=dunkarangi judgment=Inaccuracy url=https://lichess.org/jqpH3vLn
+
+=== Repeated Position #5 ===
+Count: 9
+FEN: rnbqkb1r/ppp1pppp/5n2/3p4/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 1
+Occurrences:
+  - game=WqDtAV79 date=2024-02-28T02:58:55.156000+00:00 color=white move=3 san=Nf3 opponent=HayderJalo judgment=Inaccuracy url=https://lichess.org/WqDtAV79
+  - game=hiTwVZfL date=2024-02-27T20:10:06.187000+00:00 color=white move=3 san=Nf3 opponent=Claudiodibba judgment=Inaccuracy url=https://lichess.org/hiTwVZfL
+  - game=bE8cap5p date=2024-02-20T03:42:35.783000+00:00 color=white move=3 san=Nf3 opponent=Harish_Subramanian judgment=Inaccuracy url=https://lichess.org/bE8cap5p
+  - game=tgYAtxQO date=2024-02-16T04:58:16.007000+00:00 color=white move=3 san=Nf3 opponent=Oniel1995 judgment=Inaccuracy url=https://lichess.org/tgYAtxQO
+  - game=KDjfv3hD date=2024-02-13T04:25:52.936000+00:00 color=white move=3 san=Nf3 opponent=MrRajas01 judgment=Inaccuracy url=https://lichess.org/KDjfv3hD
+  - game=ze4l9XK1 date=2024-02-07T01:01:56.210000+00:00 color=white move=3 san=Nf3 opponent=bhady11_9 judgment=Inaccuracy url=https://lichess.org/ze4l9XK1
+  - game=3L6MdS9y date=2024-02-07T00:16:52.490000+00:00 color=white move=3 san=Nf3 opponent=MGMR27 judgment=Inaccuracy url=https://lichess.org/3L6MdS9y
+  - game=YC9uph2B date=2024-02-06T23:28:10.258000+00:00 color=white move=3 san=Nf3 opponent=BlackRamBio judgment=Inaccuracy url=https://lichess.org/YC9uph2B
+  - game=f4dfzqzC date=2024-01-24T06:31:05.435000+00:00 color=white move=3 san=Nf3 opponent=Tripenlacasa judgment=Inaccuracy url=https://lichess.org/f4dfzqzC
+
+=== Repeated Position #6 ===
+Count: 7
+FEN: r1bqkbnr/ppp1pppp/2n5/8/2pP4/5N2/PP2PPPP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=6WF3btRZ date=2024-07-26T09:06:12.355000+00:00 color=white move=4 san=g3 opponent=Ahmed9Mostafa judgment=Inaccuracy url=https://lichess.org/6WF3btRZ
+  - game=dgQA0nJW date=2024-06-09T15:06:46.376000+00:00 color=white move=4 san=g3 opponent=SMal17 judgment=Inaccuracy url=https://lichess.org/dgQA0nJW
+  - game=O9GVHRSn date=2024-06-07T13:08:02.539000+00:00 color=white move=4 san=g3 opponent=beegbozz judgment=Inaccuracy url=https://lichess.org/O9GVHRSn
+  - game=gLY2e6rP date=2024-05-12T09:04:18.995000+00:00 color=white move=4 san=Nbd2 opponent=omidreza487 judgment=Mistake url=https://lichess.org/gLY2e6rP
+  - game=3VZMfFGw date=2024-02-28T20:50:16.258000+00:00 color=white move=4 san=g3 opponent=fa391304 judgment=Inaccuracy url=https://lichess.org/3VZMfFGw
+  - game=SiDeVtAc date=2024-02-27T21:13:27.104000+00:00 color=white move=4 san=g3 opponent=maia1 judgment=Inaccuracy url=https://lichess.org/SiDeVtAc
+  - game=iFCwDUNv date=2024-02-20T06:44:10.221000+00:00 color=white move=4 san=g3 opponent=godzila_db7 judgment=Inaccuracy url=https://lichess.org/iFCwDUNv
+
+=== Repeated Position #7 ===
+Count: 7
+FEN: r1bqkbnr/ppp2ppp/2np4/4P3/8/5N2/PPP1PPPP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=7F8Je95m date=2025-10-20T04:50:45.922000+00:00 color=white move=4 san=Nc3 opponent=aleksejholkin judgment=Inaccuracy url=https://lichess.org/7F8Je95m
+  - game=IY5A7qYD date=2025-10-02T19:46:35.002000+00:00 color=white move=4 san=e4 opponent=Aslan_Zh1977 judgment=Inaccuracy url=https://lichess.org/IY5A7qYD
+  - game=zcKOxwJ4 date=2025-03-14T01:46:03.167000+00:00 color=white move=4 san=Bd2 opponent=zhosta judgment=Mistake url=https://lichess.org/zcKOxwJ4
+  - game=Eo0OW1iW date=2024-11-17T07:51:40.133000+00:00 color=white move=4 san=e4 opponent=An7on judgment=Inaccuracy url=https://lichess.org/Eo0OW1iW
+  - game=tXBqe6XG date=2024-10-26T17:42:53.284000+00:00 color=white move=4 san=e4 opponent=Lucasara judgment=Inaccuracy url=https://lichess.org/tXBqe6XG
+  - game=68szsm95 date=2024-10-26T17:07:27.661000+00:00 color=white move=4 san=e4 opponent=nelvid judgment=Inaccuracy url=https://lichess.org/68szsm95
+  - game=eePIjK35 date=2024-04-13T02:46:12.946000+00:00 color=white move=4 san=e4 opponent=ackerman1 judgment=Inaccuracy url=https://lichess.org/eePIjK35
+
+=== Repeated Position #8 ===
+Count: 7
+FEN: rnbqkb1r/pppppppp/5n2/8/2PP4/8/PP2PPPP/RNBQKBNR b KQkq c3 0 1
+Occurrences:
+  - game=dLq0KQww date=2024-07-13T09:18:40.576000+00:00 color=black move=2 san=c5 opponent=cnetwork judgment=Inaccuracy url=https://lichess.org/dLq0KQww
+  - game=Vd2GSrfq date=2024-07-11T08:22:39.472000+00:00 color=black move=2 san=c5 opponent=Kochey98 judgment=Inaccuracy url=https://lichess.org/Vd2GSrfq
+  - game=Zx9AVio4 date=2024-06-23T07:51:25.198000+00:00 color=black move=2 san=c5 opponent=oddstrike88 judgment=Inaccuracy url=https://lichess.org/Zx9AVio4
+  - game=Rb1QbX88 date=2024-04-02T22:01:59.436000+00:00 color=black move=2 san=c5 opponent=patsuochooi judgment=Inaccuracy url=https://lichess.org/Rb1QbX88
+  - game=hdnveXrS date=2024-03-27T02:36:36.257000+00:00 color=black move=2 san=c5 opponent=AvramAlexander judgment=Inaccuracy url=https://lichess.org/hdnveXrS
+  - game=7pYslMyL date=2024-03-26T20:13:58.086000+00:00 color=black move=2 san=c5 opponent=missjamaica88 judgment=Inaccuracy url=https://lichess.org/7pYslMyL
+  - game=WasA1ox0 date=2024-03-11T20:58:17.765000+00:00 color=black move=2 san=c5 opponent=KagorZug judgment=Inaccuracy url=https://lichess.org/WasA1ox0
+
+=== Repeated Position #9 ===
+Count: 5
+FEN: rn1qkbnr/pp2pppp/2p5/3p1b2/2PP4/5N2/PP2PPPP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=5qiTczVf date=2024-08-07T10:42:52.967000+00:00 color=white move=4 san=g3 opponent=wolpertinger322 judgment=Inaccuracy url=https://lichess.org/5qiTczVf
+  - game=0BIMmr7u date=2024-06-09T11:08:51.767000+00:00 color=white move=4 san=g3 opponent=k1per32 judgment=Inaccuracy url=https://lichess.org/0BIMmr7u
+  - game=w11fHoir date=2024-03-03T01:52:56.187000+00:00 color=white move=4 san=g3 opponent=justme2000 judgment=Inaccuracy url=https://lichess.org/w11fHoir
+  - game=lxwBqJob date=2024-02-27T19:56:04.500000+00:00 color=white move=4 san=g3 opponent=achrys judgment=Inaccuracy url=https://lichess.org/lxwBqJob
+  - game=fSIa9gYU date=2024-02-13T04:35:45.737000+00:00 color=white move=4 san=g3 opponent=Malbox3 judgment=Inaccuracy url=https://lichess.org/fSIa9gYU
+
+=== Repeated Position #10 ===
+Count: 5
+FEN: rnbqkb1r/pppppppp/5n2/8/3P4/2N5/PPP1PPPP/R1BQKBNR b KQkq - 0 1
+Occurrences:
+  - game=sEGGffqM date=2024-12-05T04:45:58.390000+00:00 color=black move=2 san=g6 opponent=gmsohamganwani judgment=Inaccuracy url=https://lichess.org/sEGGffqM
+  - game=c0rKz6gL date=2024-08-23T18:51:51.575000+00:00 color=black move=2 san=c5 opponent=julian_arbolito judgment=Inaccuracy url=https://lichess.org/c0rKz6gL
+  - game=n0InVPB6 date=2024-08-20T03:20:31.833000+00:00 color=black move=2 san=c5 opponent=TheUrWolf judgment=Inaccuracy url=https://lichess.org/n0InVPB6
+  - game=A583JnQY date=2024-04-10T14:35:48.278000+00:00 color=black move=2 san=c5 opponent=unknown judgment=Inaccuracy url=https://lichess.org/A583JnQY
+  - game=2FyzRme7 date=2024-03-24T05:21:40.263000+00:00 color=black move=2 san=c5 opponent=shivanshlath judgment=Inaccuracy url=https://lichess.org/2FyzRme7
+
+=== Repeated Position #11 ===
+Count: 4
+FEN: r1bqkbnr/pppppppp/2n5/8/8/5N2/PPPPPPPP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=x8PRF8Lx date=2024-04-05T01:07:07.054000+00:00 color=white move=2 san=c4 opponent=Jamr19530620 judgment=Inaccuracy url=https://lichess.org/x8PRF8Lx
+  - game=g6LMsLpO date=2024-04-02T05:52:32.458000+00:00 color=white move=2 san=c4 opponent=Abdulla1977 judgment=Inaccuracy url=https://lichess.org/g6LMsLpO
+  - game=VwkiVMcY date=2024-03-31T18:39:32.521000+00:00 color=white move=2 san=c4 opponent=menouar20140 judgment=Inaccuracy url=https://lichess.org/VwkiVMcY
+  - game=TWV7Rcn0 date=2024-03-26T19:41:43.225000+00:00 color=white move=2 san=c4 opponent=Recky7 judgment=Inaccuracy url=https://lichess.org/TWV7Rcn0
+
+=== Repeated Position #12 ===
+Count: 4
+FEN: rnbqkb1r/ppp1pppp/8/3n4/3P4/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 1
+Occurrences:
+  - game=kH0uFTyQ date=2024-10-22T17:34:42.901000+00:00 color=black move=4 san=Nc6 opponent=aldo_1000 judgment=Inaccuracy url=https://lichess.org/kH0uFTyQ
+  - game=CGWbJyXp date=2024-03-08T02:14:45.131000+00:00 color=black move=4 san=Nc6 opponent=muz002 judgment=Inaccuracy url=https://lichess.org/CGWbJyXp
+  - game=wWXX8ueU date=2024-02-27T22:04:19.253000+00:00 color=black move=4 san=Nc6 opponent=Paatre judgment=Inaccuracy url=https://lichess.org/wWXX8ueU
+  - game=UdACjkWX date=2024-02-06T03:28:16.540000+00:00 color=black move=4 san=Nc6 opponent=dyyd judgment=Inaccuracy url=https://lichess.org/UdACjkWX
+
+=== Repeated Position #13 ===
+Count: 3
+FEN: r1b1kb1r/ppp1pppp/2n5/3q4/8/2P2N2/PP1P1PPP/R1BQKB1R b KQkq - 0 1
+Occurrences:
+  - game=ouNwRRJp date=2024-11-11T07:31:07.835000+00:00 color=black move=6 san=Bf5 opponent=DRudd judgment=Inaccuracy url=https://lichess.org/ouNwRRJp
+  - game=v8CXYHcl date=2024-10-29T03:08:48.691000+00:00 color=black move=6 san=Bf5 opponent=TinyCleverBaseball judgment=Inaccuracy url=https://lichess.org/v8CXYHcl
+  - game=XWYN5tZZ date=2024-09-29T01:39:26.107000+00:00 color=black move=6 san=Bf5 opponent=mehrsamiii judgment=Inaccuracy url=https://lichess.org/XWYN5tZZ
+
+=== Repeated Position #14 ===
+Count: 3
+FEN: r1b1kbnr/ppp1pppp/2n5/3q4/3P4/8/PP2PPPP/RNBQKBNR w KQkq - 0 1
+Occurrences:
+  - game=S4sibT0k date=2025-04-10T20:05:04.902000+00:00 color=white move=4 san=Nc3 opponent=ghostile judgment=Inaccuracy url=https://lichess.org/S4sibT0k
+  - game=nzXyRINc date=2024-12-10T07:20:00.228000+00:00 color=white move=4 san=Nc3 opponent=shemon11 judgment=Mistake url=https://lichess.org/nzXyRINc
+  - game=J0TOHJuD date=2024-11-18T23:19:57.942000+00:00 color=white move=4 san=Nc3 opponent=wpao judgment=Mistake url=https://lichess.org/J0TOHJuD
+
+=== Repeated Position #15 ===
+Count: 3
+FEN: r1b1kbnr/pppp1ppp/2n5/4P3/8/5N2/PqPBPPPP/RN1QKB1R w KQkq - 0 1
+Occurrences:
+  - game=7qFNFs2Y date=2024-09-18T21:45:26.468000+00:00 color=white move=6 san=Bc3 opponent=Nssibdalma99 judgment=Blunder url=https://lichess.org/7qFNFs2Y
+  - game=naS6MHXk date=2024-08-20T07:08:34.365000+00:00 color=white move=6 san=Bc3 opponent=KHS-096 judgment=Blunder url=https://lichess.org/naS6MHXk
+  - game=mccLkbzT date=2024-02-28T02:15:58.637000+00:00 color=white move=6 san=Bc3 opponent=zachhagelberg7 judgment=Blunder url=https://lichess.org/mccLkbzT
+
+=== Repeated Position #16 ===
+Count: 3
+FEN: r1bqk2r/ppp2ppp/2p5/2b4n/4P3/2P2P2/PP1P2PP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=dDjnTup6 date=2025-12-31T06:24:24.932000+00:00 color=white move=7 san=d4 opponent=nefel4817 judgment=Inaccuracy url=https://lichess.org/dDjnTup6
+  - game=Efp3yAbx date=2025-12-05T22:28:06.925000+00:00 color=white move=7 san=d4 opponent=Nustablunder judgment=Inaccuracy url=https://lichess.org/Efp3yAbx
+  - game=ED51e785 date=2025-12-04T21:08:05.210000+00:00 color=white move=7 san=d4 opponent=amberedtrinity judgment=Inaccuracy url=https://lichess.org/ED51e785
+
+=== Repeated Position #17 ===
+Count: 3
+FEN: r1bqkbnr/ppp2ppp/2n5/4P3/2Pp4/5N2/PP2PPPP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=JHXhcUwb date=2026-01-30T01:28:40.461000+00:00 color=white move=5 san=Bg5 opponent=Josepov2171 judgment=Inaccuracy url=https://lichess.org/JHXhcUwb
+  - game=CphWjPjr date=2026-01-10T22:32:10.064000+00:00 color=white move=5 san=e3 opponent=william_b1ake judgment=Inaccuracy url=https://lichess.org/CphWjPjr
+  - game=31OP2zQr date=2024-11-19T00:23:42.618000+00:00 color=white move=5 san=Bg5 opponent=Vagg74 judgment=Inaccuracy url=https://lichess.org/31OP2zQr
+
+=== Repeated Position #18 ===
+Count: 3
+FEN: r3kb1r/ppp1qppp/2n2n2/8/2b5/2N2N2/PP1PBPPP/R1BQ1RK1 b kq - 0 1
+Occurrences:
+  - game=xOoDbE3g date=2025-10-17T16:52:18.572000+00:00 color=black move=8 san=Be6 opponent=Biletnov judgment=Mistake url=https://lichess.org/xOoDbE3g
+  - game=cV39ZA9s date=2025-01-07T19:47:47.996000+00:00 color=black move=8 san=Be6 opponent=unrighteousness judgment=Mistake url=https://lichess.org/cV39ZA9s
+  - game=0URqIqO3 date=2025-01-06T20:06:15.944000+00:00 color=black move=8 san=Be6 opponent=unrighteousness judgment=Mistake url=https://lichess.org/0URqIqO3
+
+=== Repeated Position #19 ===
+Count: 3
+FEN: rn1qkb1r/ppp1pppp/8/3n4/3P4/3Q1N2/PPP2PPP/RNB1K2R b KQkq - 0 1
+Occurrences:
+  - game=2bSz6rc9 date=2025-10-01T16:38:26.610000+00:00 color=black move=6 san=Nc6 opponent=Braiight judgment=Inaccuracy url=https://lichess.org/2bSz6rc9
+  - game=tIu6Yl2W date=2025-03-13T22:39:24.646000+00:00 color=black move=6 san=Nc6 opponent=robindidon judgment=Inaccuracy url=https://lichess.org/tIu6Yl2W
+  - game=E8gJ10t4 date=2025-03-11T00:03:47.935000+00:00 color=black move=6 san=Nb4 opponent=Semisi judgment=Mistake url=https://lichess.org/E8gJ10t4
+
+=== Repeated Position #20 ===
+Count: 3
+FEN: rn1qkb1r/ppp2ppp/4bn2/8/2P5/1P6/P2P1PPP/RNBQKBNR b KQkq - 0 1
+Occurrences:
+  - game=WhlQcWhX date=2026-01-20T01:12:02.397000+00:00 color=black move=5 san=Qe7 opponent=patrickcm judgment=Mistake url=https://lichess.org/WhlQcWhX
+  - game=TCx3KcsN date=2025-03-02T04:26:06.220000+00:00 color=black move=5 san=Qe7 opponent=Genuh judgment=Mistake url=https://lichess.org/TCx3KcsN
+  - game=COvNEU0j date=2024-11-17T07:57:36.830000+00:00 color=black move=5 san=Qe7 opponent=bradailey024 judgment=Mistake url=https://lichess.org/COvNEU0j
+
+=== Repeated Position #21 ===
+Count: 3
+FEN: rn1qkbnr/pp2pppp/8/3p1b2/3P4/5N2/PP2PPPP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=QobtycVM date=2024-11-30T17:13:37.800000+00:00 color=white move=5 san=e4 opponent=PeterDornbusch judgment=Inaccuracy url=https://lichess.org/QobtycVM
+  - game=7oXKZJkI date=2024-11-04T02:35:08.850000+00:00 color=white move=5 san=Nbd2 opponent=GABU25 judgment=Inaccuracy url=https://lichess.org/7oXKZJkI
+  - game=KXVs28pJ date=2024-09-27T17:28:43.239000+00:00 color=white move=5 san=Ne5 opponent=mrchebik judgment=Inaccuracy url=https://lichess.org/KXVs28pJ
+
+=== Repeated Position #22 ===
+Count: 3
+FEN: rnbqkb1r/ppp1pppp/5n2/3p4/2P5/5N2/PP1PPPPP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=Zo9C9JKU date=2024-04-12T14:40:52.714000+00:00 color=white move=3 san=g3 opponent=unknown judgment=Inaccuracy url=https://lichess.org/Zo9C9JKU
+  - game=QPI4C5M1 date=2024-04-02T06:42:25.341000+00:00 color=white move=3 san=d4 opponent=chocometil judgment=Inaccuracy url=https://lichess.org/QPI4C5M1
+  - game=i9v0SIsh date=2024-04-02T04:36:15.851000+00:00 color=white move=3 san=d4 opponent=reddyplayer1 judgment=Inaccuracy url=https://lichess.org/i9v0SIsh
+
+=== Repeated Position #23 ===
+Count: 3
+FEN: rnbqkb1r/ppp2ppp/4pn2/3P4/2P5/2N5/PP1P1PPP/R1BQKBNR b KQkq - 0 1
+Occurrences:
+  - game=miVAMrtf date=2025-07-03T01:23:06.507000+00:00 color=black move=4 san=Qe7 opponent=JRumbo judgment=Inaccuracy url=https://lichess.org/miVAMrtf
+  - game=UNbebRkp date=2025-03-23T16:03:04.848000+00:00 color=black move=4 san=Qe7 opponent=Sinxcosxpi judgment=Inaccuracy url=https://lichess.org/UNbebRkp
+  - game=0jAtJDMK date=2025-02-06T00:54:48.062000+00:00 color=black move=4 san=c6 opponent=Hanshi42 judgment=Mistake url=https://lichess.org/0jAtJDMK
+
+=== Repeated Position #24 ===
+Count: 3
+FEN: rnbqkbnr/pp3ppp/8/2p1P3/2Pp4/5N2/PP2PPPP/RNBQKB1R w KQkq c6 0 1
+Occurrences:
+  - game=bnqNVtbU date=2025-09-26T23:43:10.519000+00:00 color=white move=5 san=g3 opponent=DrAliessafy judgment=Inaccuracy url=https://lichess.org/bnqNVtbU
+  - game=m5mSmVdd date=2024-12-10T07:55:07.365000+00:00 color=white move=5 san=e4 opponent=McCom judgment=Mistake url=https://lichess.org/m5mSmVdd
+  - game=NJn1PP6u date=2024-09-01T06:53:33.347000+00:00 color=white move=5 san=Bd2 opponent=chess_architect300 judgment=Inaccuracy url=https://lichess.org/NJn1PP6u
+
+=== Repeated Position #25 ===
+Count: 3
+FEN: rnbqkbnr/ppp1pppp/8/8/2pP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 1
+Occurrences:
+  - game=DOCIs9PI date=2024-01-30T07:32:34.059000+00:00 color=white move=3 san=g3 opponent=microsatoshi judgment=Mistake url=https://lichess.org/DOCIs9PI
+  - game=knJUxCxQ date=2024-01-30T02:31:16.961000+00:00 color=white move=3 san=g3 opponent=maia1 judgment=Mistake url=https://lichess.org/knJUxCxQ
+  - game=0a80tBSG date=2024-01-24T06:08:12.247000+00:00 color=white move=3 san=g3 opponent=damian_konin judgment=Mistake url=https://lichess.org/0a80tBSG
+
+=== Repeated Position #26 ===
+Count: 3
+FEN: rnbqkbnr/ppp2ppp/3p4/4P3/8/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1
+Occurrences:
+  - game=fhRg083j date=2024-08-23T17:37:34.712000+00:00 color=white move=3 san=e4 opponent=zlat70 judgment=Mistake url=https://lichess.org/fhRg083j
+  - game=4Gyiv1gg date=2024-02-20T06:18:15.817000+00:00 color=white move=3 san=e4 opponent=JMORA1222 judgment=Inaccuracy url=https://lichess.org/4Gyiv1gg
+  - game=JXRitc7P date=2024-01-30T19:33:44.067000+00:00 color=white move=3 san=e4 opponent=crasher1984 judgment=Mistake url=https://lichess.org/JXRitc7P
+
+=== Repeated Position #27 ===
+Count: 2
+FEN: r1b1kb1r/ppp1pppp/8/8/1nB1q3/1P3N2/P1PP1PPP/R1BQ1K1R b kq - 0 1
+Occurrences:
+  - game=WiEqaLa2 date=2025-05-05T18:09:49.050000+00:00 color=black move=8 san=e5 opponent=SmoothPoodle judgment=Blunder url=https://lichess.org/WiEqaLa2
+  - game=0hmQv5Be date=2024-08-26T07:45:33.363000+00:00 color=black move=8 san=Nxc2 opponent=Rosyutkin5 judgment=Blunder url=https://lichess.org/0hmQv5Be
+
+=== Repeated Position #28 ===
+Count: 2
+FEN: r1b1kb1r/ppp1pppp/8/8/3Pq3/2PB1N2/PP3PPP/n1BQ1K1R b kq - 0 1
+Occurrences:
+  - game=knXLUOf1 date=2025-04-28T20:30:56.739000+00:00 color=black move=10 san=Qc6 opponent=GenshinFlow judgment=Mistake url=https://lichess.org/knXLUOf1
+  - game=vQHgyYcK date=2024-07-09T08:22:49.833000+00:00 color=black move=10 san=Qc6 opponent=MAD_Fire judgment=Inaccuracy url=https://lichess.org/vQHgyYcK
+
+=== Repeated Position #29 ===
+Count: 2
+FEN: r1bq1rk1/1p1nppbp/p2p1np1/2p5/3PP3/2N1B1PP/PPP1NPB1/R2QK2R w KQ - 0 1
+Occurrences:
+  - game=0y44GwmH date=2025-02-16T01:16:56.621000+00:00 color=white move=9 san=O-O opponent=DECB001 judgment=Inaccuracy url=https://lichess.org/0y44GwmH
+  - game=5lAYuub3 date=2025-02-16T00:52:53.025000+00:00 color=white move=9 san=e5 opponent=ludan24 judgment=Mistake url=https://lichess.org/5lAYuub3
+
+=== Repeated Position #30 ===
+Count: 2
+FEN: r1bq1rk1/pp1n1pbp/2pp1np1/4p3/3PP3/2N1B1PP/PPP1NPB1/R2QK2R w KQ - 0 1
+Occurrences:
+  - game=T8al89hB date=2025-05-03T17:25:15.248000+00:00 color=white move=9 san=f4 opponent=Delacharette1 judgment=Inaccuracy url=https://lichess.org/T8al89hB
+  - game=rJ56E8sm date=2025-02-20T02:35:33.068000+00:00 color=white move=9 san=Qd2 opponent=matheuspombo judgment=Inaccuracy url=https://lichess.org/rJ56E8sm
+
+=== Repeated Position #31 ===
+Count: 2
+FEN: r1bqk2r/ppp2ppp/2n1pn2/8/2pP4/5NP1/PP1NPPBP/R2QK2R w KQkq - 0 1
+Occurrences:
+  - game=VZylVuAs date=2025-03-07T23:30:19.476000+00:00 color=white move=8 san=Qc2 opponent=fabiosevan judgment=Mistake url=https://lichess.org/VZylVuAs
+  - game=qgqotTiy date=2024-10-16T21:58:54.509000+00:00 color=white move=8 san=Qc2 opponent=SuccessHostel judgment=Mistake url=https://lichess.org/qgqotTiy
+
+=== Repeated Position #32 ===
+Count: 2
+FEN: r1bqkbnr/pp2pppp/2n5/3pP3/5Q2/8/PPP2PPP/RNB1KBNR b KQkq - 0 1
+Occurrences:
+  - game=Q4fqxEun date=2024-11-18T22:59:39.808000+00:00 color=black move=5 san=e6 opponent=napdaed judgment=Inaccuracy url=https://lichess.org/Q4fqxEun
+  - game=DrjBjXzq date=2024-08-23T13:53:59.907000+00:00 color=black move=5 san=Qc7 opponent=joffrey1989 judgment=Mistake url=https://lichess.org/DrjBjXzq
+
+=== Repeated Position #33 ===
+Count: 2
+FEN: r1bqkbnr/ppp1pppp/2n5/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq d3 0 1
+Occurrences:
+  - game=TCyUCdWP date=2024-03-19T22:05:43.805000+00:00 color=black move=3 san=e6 opponent=Primaszach judgment=Inaccuracy url=https://lichess.org/TCyUCdWP
+  - game=uRSo9YBe date=2024-02-16T07:22:44.996000+00:00 color=black move=3 san=e6 opponent=Varadian judgment=Inaccuracy url=https://lichess.org/uRSo9YBe
+
+=== Repeated Position #34 ===
+Count: 2
+FEN: r2qkb1r/ppp1pppp/2n2n2/3p4/3P2b1/5NP1/PPP1PPBP/RNBQK2R w KQkq - 0 1
+Occurrences:
+  - game=JVEXhqie date=2024-04-05T15:59:29.275000+00:00 color=white move=5 san=O-O opponent=Zaek029 judgment=Inaccuracy url=https://lichess.org/JVEXhqie
+  - game=qLb6itHc date=2024-03-07T23:44:39.285000+00:00 color=white move=5 san=O-O opponent=Ahmed9Mostafa judgment=Inaccuracy url=https://lichess.org/qLb6itHc
+
+=== Repeated Position #35 ===
+Count: 2
+FEN: r2qkb1r/ppp2ppp/2n1bn2/8/2P5/1P6/PB1P1PPP/RN1QKBNR b KQkq - 0 1
+Occurrences:
+  - game=Ew7wtONz date=2025-04-09T18:18:27.764000+00:00 color=black move=6 san=Qe7 opponent=gmbm181016 judgment=Mistake url=https://lichess.org/Ew7wtONz
+  - game=P8lsXLIQ date=2024-06-10T06:16:35.806000+00:00 color=black move=6 san=a5 opponent=alfilg2 judgment=Blunder url=https://lichess.org/P8lsXLIQ
+
+=== Repeated Position #36 ===
+Count: 2
+FEN: r2qkb1r/ppp2ppp/2n1bn2/8/2P5/2N2N2/PP1P1PPP/R1BQKB1R b KQkq - 0 1
+Occurrences:
+  - game=KHFLioTM date=2025-04-23T20:18:46.752000+00:00 color=black move=6 san=Bb4 opponent=Timboc2 judgment=Mistake url=https://lichess.org/KHFLioTM
+  - game=lJapTGOO date=2024-09-23T20:21:53.924000+00:00 color=black move=6 san=Bb4 opponent=daneckeskog judgment=Mistake url=https://lichess.org/lJapTGOO
+
+=== Repeated Position #37 ===
+Count: 2
+FEN: r2qkbnr/ppp2ppp/2n5/4P3/2Pp2b1/P4N2/1P2PPPP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=VesCfsof date=2025-03-02T06:35:11.349000+00:00 color=white move=6 san=Bg5 opponent=aly_sl2 judgment=Inaccuracy url=https://lichess.org/VesCfsof
+  - game=C3XSctjA date=2025-02-24T22:07:27.731000+00:00 color=white move=6 san=Bf4 opponent=SWP-Chess judgment=Inaccuracy url=https://lichess.org/C3XSctjA
+
+=== Repeated Position #38 ===
+Count: 2
+FEN: rn1qk2r/ppp2ppp/4bn2/8/1bPP4/2N5/PP3PPP/R1BQKBNR b KQkq - 0 1
+Occurrences:
+  - game=g5RpRZbT date=2025-12-20T05:52:28.798000+00:00 color=black move=6 san=Qe7 opponent=Mehdi14044 judgment=Inaccuracy url=https://lichess.org/g5RpRZbT
+  - game=7XmIiiIp date=2025-11-27T00:55:31.687000+00:00 color=black move=6 san=Qe7 opponent=MS_Razavi judgment=Inaccuracy url=https://lichess.org/7XmIiiIp
+
+=== Repeated Position #39 ===
+Count: 2
+FEN: rn1qkb1r/ppp1pppp/5nb1/8/3PP3/5N2/PP1N1PPP/R1BQKB1R w KQkq - 0 1
+Occurrences:
+  - game=MbgnxtDG date=2025-05-17T08:35:04.997000+00:00 color=white move=7 san=Qb3 opponent=AlmightyIndian judgment=Inaccuracy url=https://lichess.org/MbgnxtDG
+  - game=M2HjUL1W date=2025-02-20T02:55:44.814000+00:00 color=white move=7 san=d5 opponent=dileepmundaya judgment=Mistake url=https://lichess.org/M2HjUL1W
+
+=== Repeated Position #40 ===
+Count: 2
+FEN: rn1qkbnr/ppp1pppp/6b1/8/3PP3/2N5/PP3PPP/R1BQKBNR w KQkq - 0 1
+Occurrences:
+  - game=IIAmETOy date=2026-01-06T03:06:32.756000+00:00 color=white move=6 san=Bf4 opponent=ALANSARY1212 judgment=Inaccuracy url=https://lichess.org/IIAmETOy
+  - game=5O1GT5IQ date=2025-01-03T03:08:01.097000+00:00 color=white move=6 san=Qb3 opponent=Zidji judgment=Inaccuracy url=https://lichess.org/5O1GT5IQ
+
+=== Repeated Position #41 ===
+Count: 2
+FEN: rn2kbnr/ppp1pppp/8/3q1b2/3P4/8/PP2PPPP/RNBQKBNR w KQkq - 0 1
+Occurrences:
+  - game=bzkCiBEt date=2024-11-17T08:02:01.823000+00:00 color=white move=4 san=Nf3 opponent=Posemuckel judgment=Mistake url=https://lichess.org/bzkCiBEt
+  - game=c2gg4d5j date=2024-10-16T20:17:04.982000+00:00 color=white move=4 san=Nf3 opponent=djamel3ddine judgment=Mistake url=https://lichess.org/c2gg4d5j
+
+=== Repeated Position #42 ===
+Count: 2
+FEN: rnb1kb1r/ppp1pppp/8/3q4/8/1P6/P1PP1PPP/R1BQKBNR b KQkq - 0 1
+Occurrences:
+  - game=8uw5JeOd date=2025-04-23T00:43:33.081000+00:00 color=black move=5 san=Nc6 opponent=MohamedAzouz222 judgment=Blunder url=https://lichess.org/8uw5JeOd
+  - game=kV3XtK9S date=2024-12-10T00:21:49.474000+00:00 color=black move=5 san=Nc6 opponent=milanov2 judgment=Blunder url=https://lichess.org/kV3XtK9S
+
+=== Repeated Position #43 ===
+Count: 2
+FEN: rnb1kbnr/ppppqppp/8/4P3/8/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1
+Occurrences:
+  - game=dVIY6mwT date=2025-03-28T23:24:14.916000+00:00 color=white move=3 san=Nf3 opponent=Malbah judgment=Inaccuracy url=https://lichess.org/dVIY6mwT
+  - game=o6iukuHk date=2025-02-22T22:49:47.905000+00:00 color=white move=3 san=Nf3 opponent=Rizzo79 judgment=Inaccuracy url=https://lichess.org/o6iukuHk
+
+=== Repeated Position #44 ===
+Count: 2
+FEN: rnbqkb1r/pp1ppppp/5n2/8/3N1B2/8/PPP1PPPP/RN1QKB1R b KQkq - 0 1
+Occurrences:
+  - game=RpcdmSSS date=2025-01-12T04:41:26.858000+00:00 color=black move=4 san=Nc6 opponent=GhostRider9 judgment=Blunder url=https://lichess.org/RpcdmSSS
+  - game=lWMjn6pw date=2024-07-13T10:53:14.578000+00:00 color=black move=4 san=Nc6 opponent=Kingston_Bob judgment=Blunder url=https://lichess.org/lWMjn6pw
+
+=== Repeated Position #45 ===
+Count: 2
+FEN: rnbqkb1r/pp3ppp/2p1pn2/3p4/2PP1B2/2N2N2/PP2PPPP/R2QKB1R b KQkq - 0 1
+Occurrences:
+  - game=V3xLKqVY date=2025-11-29T18:26:04.276000+00:00 color=black move=5 san=Qb6 opponent=wowa1980RUS judgment=Inaccuracy url=https://lichess.org/V3xLKqVY
+  - game=EIvp95H5 date=2025-04-28T21:14:52.900000+00:00 color=black move=5 san=Qb6 opponent=Mutu1907 judgment=Inaccuracy url=https://lichess.org/EIvp95H5
+
+=== Repeated Position #46 ===
+Count: 2
+FEN: rnbqkb1r/pp3ppp/4p3/2p5/1n1PP3/5NP1/PP3P1P/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=q7gyXKt5 date=2025-02-28T20:50:14.092000+00:00 color=white move=7 san=Nc3 opponent=damiendify judgment=Blunder url=https://lichess.org/q7gyXKt5
+  - game=47Y5rGnA date=2024-12-10T00:56:43.234000+00:00 color=white move=7 san=Bg2 opponent=milanov2 judgment=Inaccuracy url=https://lichess.org/47Y5rGnA
+
+=== Repeated Position #47 ===
+Count: 2
+FEN: rnbqkb1r/ppp2ppp/4pn2/8/2pPP3/P1N5/1P3PPP/R1BQKBNR b KQkq e3 0 1
+Occurrences:
+  - game=pLip97te date=2025-10-01T23:38:46.428000+00:00 color=black move=5 san=c6 opponent=babai1953 judgment=Inaccuracy url=https://lichess.org/pLip97te
+  - game=7B6NiP4Z date=2025-08-07T13:54:17.257000+00:00 color=black move=5 san=c6 opponent=osamageris judgment=Inaccuracy url=https://lichess.org/7B6NiP4Z
+
+=== Repeated Position #48 ===
+Count: 2
+FEN: rnbqkbnr/pp1p1ppp/8/2pPp3/8/8/PPP1PPPP/RNBQKBNR w KQkq e6 0 1
+Occurrences:
+  - game=7ibolQI0 date=2025-07-23T04:49:53.332000+00:00 color=white move=3 san=dxe6 opponent=thxAggressive judgment=Inaccuracy url=https://lichess.org/7ibolQI0
+  - game=mQDDX4vJ date=2025-05-25T22:43:27.450000+00:00 color=white move=3 san=dxe6 opponent=evee_09 judgment=Inaccuracy url=https://lichess.org/mQDDX4vJ
+
+=== Repeated Position #49 ===
+Count: 2
+FEN: rnbqkbnr/ppp1p1pp/5p2/8/2pP4/5N2/PP2PPPP/RNBQKB1R w KQkq - 0 1
+Occurrences:
+  - game=0Wtu3zbp date=2025-03-10T20:50:44.904000+00:00 color=white move=4 san=Nc3 opponent=Zarea444 judgment=Inaccuracy url=https://lichess.org/0Wtu3zbp
+  - game=upHiCTpz date=2024-08-15T09:50:07.503000+00:00 color=white move=4 san=Qc2 opponent=petercezar judgment=Inaccuracy url=https://lichess.org/upHiCTpz
+
+=== Repeated Position #50 ===
+Count: 2
+FEN: rnbqkbnr/ppp1pp2/7p/3p2p1/3P4/6B1/PPP1PPPP/RN1QKBNR b KQkq - 0 1
+Occurrences:
+  - game=0qsYyk84 date=2025-04-13T23:19:07.412000+00:00 color=black move=4 san=f5 opponent=DeLook judgment=Inaccuracy url=https://lichess.org/0qsYyk84
+  - game=M886kFk0 date=2025-03-28T22:42:04.460000+00:00 color=black move=4 san=f5 opponent=lonthroposil judgment=Inaccuracy url=https://lichess.org/M886kFk0
+
+=== Repeated Position #51 ===
+Count: 2
+FEN: rnbqkbnr/ppp1pppp/8/6N1/4p3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 1
+Occurrences:
+  - game=koFNZEeY date=2024-03-31T01:53:39.469000+00:00 color=black move=3 san=Nf6 opponent=Skazobrain judgment=Inaccuracy url=https://lichess.org/koFNZEeY
+  - game=4WUYvWTa date=2024-01-30T17:35:18.019000+00:00 color=black move=3 san=Nf6 opponent=samah321 judgment=Inaccuracy url=https://lichess.org/4WUYvWTa
+

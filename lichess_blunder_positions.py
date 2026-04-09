@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-Find recurring early-game blunder positions for a Lichess user.
+Find recurring early-game error positions for a Lichess user.
 
 What it does:
 - Downloads analyzed games for a Lichess user since a YYYY-MM-DD date.
 - Keeps only standard chess games.
-- For each game, finds the user's first blunder within the first N full moves.
-- Stores each found blunder position locally in JSONL.
-- Exports repeated blunder positions to a TXT file keyed by normalized FEN.
+- For each game, finds the user's first qualifying error within the first N full moves.
+- By default, qualifying errors are: Inaccuracy, Mistake, or Blunder.
+- Optionally, use --from-cpl N to detect the first move with centipawn loss >= N instead.
+- Stores each found position locally in JSONL.
+- Exports repeated positions to a TXT file keyed by normalized FEN.
 - Emits progress logs while running.
 
 Install:
@@ -23,8 +25,8 @@ Examples:
     python lichess_blunder_positions.py \
         --username some_user \
         --since 2025-01-01 \
-        --token lip_your_token_here \
-        --log-every 25
+        --from-cpl 80 \
+        --out-dir out
 """
 
 from __future__ import annotations
@@ -32,6 +34,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import math
 import sys
 import time
 from collections import defaultdict
@@ -41,14 +44,13 @@ from io import StringIO
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
 
-
 import chess
 import chess.pgn
 import requests
 
 
-
 API_URL_TEMPLATE = "https://lichess.org/api/games/user/{username}"
+QUALIFYING_JUDGMENTS = {"Inaccuracy", "Mistake", "Blunder"}
 
 
 @dataclass
@@ -65,12 +67,14 @@ class BlunderRecord:
     result: str
     move_number: int               # fullmove number, e.g. 6 means move 6
     ply_index: int                 # 1-based ply index
-    san_played: str                # SAN of the blunder move
-    fen_before: str                # full FEN before the blunder move
+    san_played: str                # SAN of the move
+    fen_before: str                # full FEN before the move
     normalized_fen: str            # FEN normalized for repetition matching
     comment: Optional[str]         # analysis comment if present
-    judgment_name: Optional[str]   # "Blunder" if directly available
-    source: str                    # "analysis", "pgn_nag", or "pgn_comment"
+    judgment_name: Optional[str]   # e.g. "Inaccuracy", "Mistake", "Blunder"
+    source: str                    # "analysis", "pgn_nag", "pgn_comment", or "analysis_cpl"
+    cpl: Optional[int]             # centipawn loss if computed
+    threshold_used: Optional[int]  # value of --from-cpl when CPL mode is used
 
 
 def setup_logging(verbose: bool) -> None:
@@ -84,7 +88,7 @@ def setup_logging(verbose: bool) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Find recurring early blunder positions for a Lichess user."
+        description="Find recurring early error positions for a Lichess user."
     )
     parser.add_argument("--username", required=True, help="Lichess username")
     parser.add_argument(
@@ -96,7 +100,16 @@ def parse_args() -> argparse.Namespace:
         "--max-fullmoves",
         type=int,
         default=10,
-        help="Only inspect blunders within the first N full moves (default: 10)",
+        help="Only inspect errors within the first N full moves (default: 10)",
+    )
+    parser.add_argument(
+        "--from-cpl",
+        type=int,
+        default=0,
+        help=(
+            "If 0, use Lichess judgment text (Inaccuracy/Mistake/Blunder). "
+            "If nonzero, use this centipawn loss threshold instead."
+        ),
     )
     parser.add_argument(
         "--out-dir",
@@ -140,14 +153,6 @@ def epoch_ms_to_iso_utc(epoch_ms: Optional[int]) -> Optional[str]:
 
 
 def normalized_fen(board: chess.Board) -> str:
-    """
-    Normalize FEN so repeated-position matching ignores halfmove/fullmove counters.
-    This preserves:
-    - piece placement
-    - side to move
-    - castling rights
-    - en passant square
-    """
     ep = chess.square_name(board.ep_square) if board.ep_square is not None else "-"
     return f"{board.board_fen()} {'w' if board.turn else 'b'} {board.castling_xfen()} {ep} 0 1"
 
@@ -155,7 +160,7 @@ def normalized_fen(board: chess.Board) -> str:
 def lichess_headers(token: Optional[str]) -> Dict[str, str]:
     headers = {
         "Accept": "application/x-ndjson",
-        "User-Agent": "lichess-blunder-positions/1.0",
+        "User-Agent": "lichess-blunder-positions/1.1",
     }
     if token:
         headers["Authorization"] = f"Bearer {token}"
@@ -239,14 +244,79 @@ def get_user_color_and_opponent(
     return None
 
 
-def extract_first_blunder_from_game(
+def eval_item_to_pawns(eval_item: Optional[Dict[str, Any]]) -> Optional[float]:
+    """
+    Convert one Lichess analysis item to a pawn-score from White's perspective.
+    Returns:
+      - float pawn score if cp is available
+      - +/-inf if mate is available
+      - None otherwise
+    """
+    if not isinstance(eval_item, dict):
+        return None
+
+    if "cp" in eval_item and eval_item["cp"] is not None:
+        try:
+            return float(eval_item["cp"]) / 100.0
+        except (TypeError, ValueError):
+            return None
+
+    if "mate" in eval_item and eval_item["mate"] is not None:
+        try:
+            mate = int(eval_item["mate"])
+        except (TypeError, ValueError):
+            return None
+        return math.inf if mate > 0 else -math.inf
+
+    return None
+
+
+def compute_centipawn_loss_for_move(
+    analysis_before: Optional[Dict[str, Any]],
+    analysis_after: Optional[Dict[str, Any]],
+    mover_is_white: bool,
+) -> Optional[int]:
+    """
+    Compute CPL for the played move based on eval before and after the move.
+
+    Both evals are interpreted from White's perspective.
+    For White move: CPL ~= (before - after) in pawns if score worsened for White.
+    For Black move: CPL ~= (after - before) in pawns if score worsened for Black,
+                    equivalently if White's eval increased after Black's move.
+
+    Mate scores are not converted into a finite CPL.
+    """
+    before = eval_item_to_pawns(analysis_before)
+    after = eval_item_to_pawns(analysis_after)
+
+    if before is None or after is None:
+        return None
+    if math.isinf(before) or math.isinf(after):
+        return None
+
+    if mover_is_white:
+        loss_pawns = before - after
+    else:
+        loss_pawns = after - before
+
+    if loss_pawns <= 0:
+        return 0
+
+    return int(round(loss_pawns * 100))
+
+
+def extract_first_error_from_game(
     game_json: Dict[str, Any],
     username: str,
     max_fullmoves: int,
+    from_cpl: int,
 ) -> Optional[BlunderRecord]:
     """
-    Prefer structured JSON analysis if present.
-    Fall back to PGN NAG/comment detection if necessary.
+    If from_cpl == 0:
+        Prefer structured JSON judgment, and treat Inaccuracy/Mistake/Blunder as qualifying.
+        Fall back to PGN NAG/comment detection.
+    If from_cpl > 0:
+        Ignore judgment text and use CPL threshold instead, based on adjacent analysis entries.
     """
     variant = (game_json.get("variant") or "").lower()
     if variant != "standard":
@@ -280,7 +350,6 @@ def extract_first_blunder_from_game(
         move = next_node.move
         ply_index += 1
 
-        # Position before the move is the decision point.
         fen_before = board.fen()
         norm_before = normalized_fen(board)
         move_number = board.fullmove_number
@@ -290,15 +359,21 @@ def extract_first_blunder_from_game(
 
         if is_user_move and move_number <= max_fullmoves:
             san_played = board.san(move)
+            mover_is_white = board.turn == chess.WHITE
 
-            # Path 1: structured analysis from JSON
-            if has_structured_analysis and len(analysis) >= ply_index:
-                analysis_item = analysis[ply_index - 1] or {}
-                judgment = analysis_item.get("judgment") or {}
-                judgment_name = judgment.get("name")
-                comment = judgment.get("comment")
-
-                if judgment_name == "Blunder":
+            # CPL mode
+            if from_cpl > 0 and has_structured_analysis:
+                analysis_before = analysis[ply_index - 2] if (ply_index - 2) >= 0 and (ply_index - 2) < len(analysis) else None
+                analysis_after = analysis[ply_index - 1] if (ply_index - 1) < len(analysis) else None
+                cpl = compute_centipawn_loss_for_move(
+                    analysis_before=analysis_before,
+                    analysis_after=analysis_after,
+                    mover_is_white=mover_is_white,
+                )
+                if cpl is not None and cpl >= from_cpl:
+                    judgment = (analysis_after or {}).get("judgment") or {}
+                    judgment_name = judgment.get("name")
+                    comment = judgment.get("comment")
                     return BlunderRecord(
                         username=username,
                         game_id=game_json.get("id", ""),
@@ -317,44 +392,92 @@ def extract_first_blunder_from_game(
                         normalized_fen=norm_before,
                         comment=comment,
                         judgment_name=judgment_name,
-                        source="analysis",
+                        source="analysis_cpl",
+                        cpl=cpl,
+                        threshold_used=from_cpl,
                     )
 
-            # Path 2: PGN annotations / NAG fallback
-            comment_text = (next_node.comment or "").strip()
-            nags = set(next_node.nags or set())
+            # Judgment-text mode
+            elif from_cpl == 0:
+                if has_structured_analysis and len(analysis) >= ply_index:
+                    analysis_item = analysis[ply_index - 1] or {}
+                    judgment = analysis_item.get("judgment") or {}
+                    judgment_name = judgment.get("name")
+                    comment = judgment.get("comment")
 
-            is_pgn_blunder = (
-                chess.pgn.NAG_BLUNDER in nags
-                or "blunder" in comment_text.lower()
-            )
+                    if judgment_name in QUALIFYING_JUDGMENTS:
+                        return BlunderRecord(
+                            username=username,
+                            game_id=game_json.get("id", ""),
+                            game_url=f"https://lichess.org/{game_json.get('id', '')}",
+                            played_at_utc=epoch_ms_to_iso_utc(game_json.get("lastMoveAt")),
+                            color=user_color,
+                            opponent=opponent,
+                            event=event,
+                            white=white_name,
+                            black=black_name,
+                            result=result,
+                            move_number=move_number,
+                            ply_index=ply_index,
+                            san_played=san_played,
+                            fen_before=fen_before,
+                            normalized_fen=norm_before,
+                            comment=comment,
+                            judgment_name=judgment_name,
+                            source="analysis",
+                            cpl=None,
+                            threshold_used=None,
+                        )
 
-            if is_pgn_blunder:
-                return BlunderRecord(
-                    username=username,
-                    game_id=game_json.get("id", ""),
-                    game_url=f"https://lichess.org/{game_json.get('id', '')}",
-                    played_at_utc=epoch_ms_to_iso_utc(game_json.get("lastMoveAt")),
-                    color=user_color,
-                    opponent=opponent,
-                    event=event,
-                    white=white_name,
-                    black=black_name,
-                    result=result,
-                    move_number=move_number,
-                    ply_index=ply_index,
-                    san_played=san_played,
-                    fen_before=fen_before,
-                    normalized_fen=norm_before,
-                    comment=comment_text or None,
-                    judgment_name="Blunder" if "blunder" in comment_text.lower() else None,
-                    source="pgn_nag" if chess.pgn.NAG_BLUNDER in nags else "pgn_comment",
+                # PGN fallback only in judgment-text mode
+                comment_text = (next_node.comment or "").strip()
+                nags = set(next_node.nags or set())
+
+                # python-chess has standard NAG constants for inaccuracies, mistakes, blunders
+                is_pgn_error = (
+                    chess.pgn.NAG_DUBIOUS_MOVE in nags
+                    or chess.pgn.NAG_MISTAKE in nags
+                    or chess.pgn.NAG_BLUNDER in nags
+                    or "inaccuracy" in comment_text.lower()
+                    or "mistake" in comment_text.lower()
+                    or "blunder" in comment_text.lower()
                 )
+
+                if is_pgn_error:
+                    derived_name = None
+                    if chess.pgn.NAG_BLUNDER in nags or "blunder" in comment_text.lower():
+                        derived_name = "Blunder"
+                    elif chess.pgn.NAG_MISTAKE in nags or "mistake" in comment_text.lower():
+                        derived_name = "Mistake"
+                    elif chess.pgn.NAG_DUBIOUS_MOVE in nags or "inaccuracy" in comment_text.lower():
+                        derived_name = "Inaccuracy"
+
+                    return BlunderRecord(
+                        username=username,
+                        game_id=game_json.get("id", ""),
+                        game_url=f"https://lichess.org/{game_json.get('id', '')}",
+                        played_at_utc=epoch_ms_to_iso_utc(game_json.get("lastMoveAt")),
+                        color=user_color,
+                        opponent=opponent,
+                        event=event,
+                        white=white_name,
+                        black=black_name,
+                        result=result,
+                        move_number=move_number,
+                        ply_index=ply_index,
+                        san_played=san_played,
+                        fen_before=fen_before,
+                        normalized_fen=norm_before,
+                        comment=comment_text or None,
+                        judgment_name=derived_name,
+                        source="pgn_nag" if nags else "pgn_comment",
+                        cpl=None,
+                        threshold_used=None,
+                    )
 
         board.push(move)
         node = next_node
 
-        # Once we've moved past the search window for both sides, stop early.
         if board.fullmove_number > max_fullmoves and board.turn == chess.WHITE:
             break
 
@@ -373,7 +496,7 @@ def write_repeated_txt(path: Path, grouped: Dict[str, List[BlunderRecord]]) -> N
 
     with path.open("w", encoding="utf-8") as f:
         if not repeated_items:
-            f.write("No repeated early blunder positions were found.\n")
+            f.write("No repeated early error positions were found.\n")
             return
 
         for idx, (fen, recs) in enumerate(repeated_items, start=1):
@@ -382,10 +505,15 @@ def write_repeated_txt(path: Path, grouped: Dict[str, List[BlunderRecord]]) -> N
             f.write(f"FEN: {fen}\n")
             f.write("Occurrences:\n")
             for rec in recs:
+                extra = ""
+                if rec.cpl is not None:
+                    extra = f" cpl={rec.cpl}"
+                elif rec.judgment_name:
+                    extra = f" judgment={rec.judgment_name}"
                 f.write(
                     f"  - game={rec.game_id} date={rec.played_at_utc or 'unknown'} "
                     f"color={rec.color} move={rec.move_number} san={rec.san_played} "
-                    f"opponent={rec.opponent} url={rec.game_url}\n"
+                    f"opponent={rec.opponent}{extra} url={rec.game_url}\n"
                 )
             f.write("\n")
 
@@ -399,16 +527,22 @@ def main() -> int:
 
     since_ms = yyyy_mm_dd_to_epoch_ms(args.since)
     logging.info(
-        "Starting scan for user=%s since=%s (epoch_ms=%d), max_fullmoves=%d",
+        "Starting scan for user=%s since=%s (epoch_ms=%d), max_fullmoves=%d, from_cpl=%d",
         args.username,
         args.since,
         since_ms,
         args.max_fullmoves,
+        args.from_cpl,
     )
+
+    if args.from_cpl == 0:
+        logging.info("Mode: judgment text (Inaccuracy/Mistake/Blunder)")
+    else:
+        logging.info("Mode: centipawn loss threshold >= %d", args.from_cpl)
 
     processed = 0
     standard_games = 0
-    found_blunders = 0
+    found_errors = 0
     skipped_duplicates = 0
     seen_game_ids = set()
 
@@ -436,36 +570,40 @@ def main() -> int:
                         "Progress: processed=%d standard=%d found=%d duplicates=%d",
                         processed,
                         standard_games,
-                        found_blunders,
+                        found_errors,
                         skipped_duplicates,
                     )
                 continue
 
             standard_games += 1
 
-            record = extract_first_blunder_from_game(
+            record = extract_first_error_from_game(
                 game_json=game_json,
                 username=args.username,
                 max_fullmoves=args.max_fullmoves,
+                from_cpl=args.from_cpl,
             )
             if record is not None:
-                found_blunders += 1
-                records.append(record)
+                found_errors += 1
                 logging.info(
-                    "Found early blunder: game=%s move=%d color=%s san=%s fen=%s",
+                    "Found early error: game=%s move=%d color=%s san=%s source=%s judgment=%s cpl=%s fen=%s",
                     record.game_id,
                     record.move_number,
                     record.color,
                     record.san_played,
+                    record.source,
+                    record.judgment_name,
+                    record.cpl,
                     record.normalized_fen,
                 )
+                records.append(record)
 
             if processed % args.log_every == 0:
                 logging.info(
                     "Progress: processed=%d standard=%d found=%d duplicates=%d",
                     processed,
                     standard_games,
-                    found_blunders,
+                    found_errors,
                     skipped_duplicates,
                 )
 
@@ -490,8 +628,8 @@ def main() -> int:
     logging.info("Done.")
     logging.info("Processed total games: %d", processed)
     logging.info("Standard games checked: %d", standard_games)
-    logging.info("Blunder positions stored: %d", len(records))
-    logging.info("Repeated blunder positions found: %d", repeated_count)
+    logging.info("Error positions stored: %d", len(records))
+    logging.info("Repeated error positions found: %d", repeated_count)
     logging.info("JSONL output: %s", jsonl_path.resolve())
     logging.info("TXT output: %s", repeated_txt_path.resolve())
 
