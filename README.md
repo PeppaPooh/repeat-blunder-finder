@@ -4,20 +4,23 @@
 
 -- George W. Bush
 
-**Do you want to get better at chess openings, but don't know where to start? Do you hate staring at opening theory? Are you frustrated that your opponents don't play into the mainline that you learned on Youtube?** This project aims to help. This project is an automated script that looks through your games and finds opening mistakes that you've made more than once. Improve by fixing your mistakes one by one.
+**Do you want to get better at chess openings, but don't know where to start? Do you hate staring at opening theory? Are you frustrated that your opponents don't play into the mainline that you learned on Youtube?** This project aims to help. 
 
-![[Visualizer-demo.png]]
+This project is an automated script that looks through your games and finds opening mistakes that you've made more than once. Improve your opening play by fixing your mistakes one by one.
+
+![](images/vis-demo.png)
 
 # Example Usages
+
+### Find repeat blunders for EricRosen since Jan 1, 2026
+~~~bash
+python main.py --username EricRosen --since 2026-01-01
+~~~
+This generates a plain text file named repead_blunder_positions\*timestamp*.txt in the ./out subdirectory. 
+
 ### Get help
 ~~~bash
 python main.py --help
-~~~
-
-
-### Find repeat blunders for EricRosen since Jan 1, 2026,  (default settings)
-~~~bash
-python main.py --username EricRosen --since 2026-01-01
 ~~~
 
 
@@ -25,16 +28,17 @@ python main.py --username EricRosen --since 2026-01-01
 ~~~bash
 python main.py
 ~~~
-
+**DO NOT RUN THIS WITHOUT CONFIGURING config.yaml**
 
 
 ## Visualize your repeat blunders
+After a repead_blunder_positions\*timestamp*.txt has been generated, run this from the ./visualizer subdirectory to visualize your blunder positions:
 ~~~bash
-cd visualizer
 npm start
 ~~~
 Go to https://localhost:3000 to see your repeat blunders 
 
+The latest generated repead_blunder_positions\*timestamp*.txt will be used.
 
 # Directory Guide
 What each file does：
