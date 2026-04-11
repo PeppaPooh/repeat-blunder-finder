@@ -6,6 +6,7 @@
 
 **Do you want to get better at chess openings, but don't know where to start? Do you hate staring at opening theory? Are you frustrated that your opponents don't play into the mainline that you learned on Youtube?** This project aims to help. This project is an automated script that looks through your games and finds opening mistakes that you've made more than once. Improve by fixing your mistakes one by one.
 
+![[Visualizer-demo.png]]
 
 # Example Usages
 ### Get help
@@ -13,15 +14,18 @@
 python main.py --help
 ~~~
 
+
+### Find repeat blunders for EricRosen since Jan 1, 2026,  (default settings)
+~~~bash
+python main.py --username EricRosen --since 2026-01-01
+~~~
+
+
 ### Use settings in config.yaml
 ~~~bash
 python main.py
 ~~~
 
-### Find repeat blunders for EricRosen since Jan 1, 2026
-~~~bash
-python main.py --username EricRosen --since 2026-01-01
-~~~
 
 
 ## Visualize your repeat blunders
