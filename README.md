@@ -1,3 +1,12 @@
+# Opening Blunder Finder
+
+> There's an old saying in Tennessee -- I know it's in Texas, probably in Tennessee -- that says, fool me once, shame on... shame on you. Fool me -- you can't get fooled again.
+
+-- George W. Bush
+
+**Do you want to get better at chess openings, but don't know where to start? Do you hate staring at opening theory? Are you frustrated that your opponents don't play into the mainline that you learned on Youtube?** This project aims to help. This project is an automated script that looks through your games and finds opening mistakes that you've made more than once. Improve by fixing your mistakes one by one.
+
+
 # Example Usages
 ### Get help
 ~~~bash
