@@ -15,6 +15,12 @@ python main.py --username EricRosen --since 2026-01-01
 ~~~
 
 
+## Visualize your repeat blunders
+~~~bash
+cd visualizer
+npm start
+~~~
+Go to https://localhost:3000 to see your repeat blunders 
 
 
 # Directory Guide
