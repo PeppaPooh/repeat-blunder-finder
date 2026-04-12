@@ -153,7 +153,7 @@
                         : [b.fen];
                     const moves = Array.isArray(b.replayMoves) ? b.replayMoves : [];
                     const ground = Chessground(boardHost, {
-                        fen: fens[0],
+                        fen: fens[fens.length - 1],
                         coordinates: true,
                         viewOnly: true,
                         orientation: userSide,
@@ -180,10 +180,9 @@
                     ctrl.appendChild(fwdBtn);
                     ctrl.appendChild(moveInfo);
                     card.appendChild(ctrl);
-
-                    let moveIndex = 0;
                     const maxMoveIndex = Math.max(0, fens.length - 1);
-
+                    let moveIndex = maxMoveIndex;
+                
                     function updateButtons() {
                         backBtn.disabled = moveIndex === 0;
                         fwdBtn.disabled = moveIndex >= maxMoveIndex;
