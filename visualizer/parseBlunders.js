@@ -5,6 +5,7 @@ function parseBlunders(filePath) {
   const positions = text.split(/=== Repeated Position #[0-9]+ ===/).slice(1);
 
   const blunders = positions.map((posText, idx) => {
+    const colorMatch = posText.match(/color=(white|black)\b/i);
     const fenMatch = posText.match(/FEN:\s*(.*)/);
     const pgnLineMatch = posText.match(/Most common game PGN.*?:\s*(.*)/);
     const countMatch = posText.match(/Count:\s*(\d+)/);
@@ -28,6 +29,7 @@ function parseBlunders(filePath) {
       count: countMatch ? Number(countMatch[1]) : 0,
       opening: openingMatch ? openingMatch[1].trim() : undefined,
       url: urlMatch ? urlMatch[1] : undefined,
+      userSide: colorMatch ? colorMatch[1].toLowerCase() : 'white',
     };
   });
 

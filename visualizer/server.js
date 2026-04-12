@@ -57,7 +57,6 @@ app.get('/blunders', (req, res) => {
   const totalPages = Math.ceil(blunders.length / perPage);
   const pageItems = blunders.slice(start, end).map((b) => {
     const replay = buildReplayData(b.pgn, b.fen);
-    
     return {
       ...b,
       replayMoves: replay.moves,

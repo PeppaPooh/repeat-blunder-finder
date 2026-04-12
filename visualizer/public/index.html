@@ -19,7 +19,6 @@
             padding: 16px;
             background: radial-gradient(circle at top, #fffaf1, var(--bg));
             color: var(--text);
-            font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
         }
 
         #status {
@@ -133,7 +132,15 @@
 
                     const meta = document.createElement('div');
                     meta.className = 'meta';
-                    meta.innerHTML = `<strong>#${b.index}</strong> Count: ${b.count} <br>Latest: ${new Date(b.latestDateIso).toLocaleString()}${b.opening ? `<br>Opening: ${b.opening}` : ''}${b.url ? `<br><a href="${b.url}" target="_blank" rel="noopener noreferrer">Sample game</a>` : ''}`;
+                    const userSide = b.userSide === 'black' ? 'black' : 'white';
+                    const userSideLabel = userSide === 'black' ? 'Black' : 'White';
+                    meta.innerHTML = `<strong>#${b.index}</strong> Count: ${b.count}
+                      <br>Latest: ${new Date(b.latestDateIso).toLocaleString()}
+                      <br>Side: ${userSideLabel}
+                      ${b.opening ? `<br>Opening: ${b.opening}` : ''}
+                      ${b.url ? `<br><a href="${b.url}" target="_blank" rel="noopener noreferrer">Sample game</a>` : ''}`;
+
+                    
                     card.appendChild(meta);
 
                     const boardHost = document.createElement('div');
@@ -149,7 +156,7 @@
                         fen: fens[0],
                         coordinates: true,
                         viewOnly: true,
-                        orientation: 'white',
+                        orientation: userSide,
                     });
 
                     function renderPosition() {
