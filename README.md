@@ -32,7 +32,12 @@ python main.py
 
 
 ## Visualize your repeat blunders
-After a repead_blunder_positions\*timestamp*.txt has been generated, run this from the ./visualizer subdirectory to visualize your blunder positions:
+
+# Setup  
+  
+After a repead_blunder_positions\*timestamp*.txt has been generated:
+1. [Install Node.js ](https://nodejs.org/en/download) 
+2. run this from the ./visualizer subdirectory to visualize your blunder positions:
 ~~~bash
 npm start
 ~~~
