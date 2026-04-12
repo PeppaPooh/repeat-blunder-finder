@@ -46,7 +46,24 @@ Go to https://localhost:3000 to see your repeat blunders
 The latest generated repead_blunder_positions\*timestamp*.txt will be used.
 
 # Directory Guide
-What each file does：
+## By subdirectory
+
+models/
+- Pure data containers. No business logic.
+
+core/
+- Domain logic for chess position/error analysis and grouping.
+
+io_utils/
+- File system reads/writes, cache handling, and config ingestion.
+
+lichess/
+- Network/API integration and raw game parsing helpers.
+
+utils/
+- Small generic helpers reused across the app.
+
+## By file
 
 main.py
 - Entry point and orchestration only.
@@ -89,7 +106,6 @@ io_utils/writers.py
 lichess/api.py
 - Lichess HTTP interaction only.
 - Builds headers and streams user games from the API.
-- Keep only the newer stream_user_games version here (the one that supports until_ms).
 
 lichess/parsing.py
 - PGN/game metadata extraction helpers.
@@ -103,20 +119,3 @@ utils/logging_utils.py
 
 utils/time_utils.py
 - Time/date formatting and conversion helpers.
-
-Subdirectory purpose
-
-models/
-- Pure data containers. No business logic.
-
-core/
-- Domain logic for chess position/error analysis and grouping.
-
-io_utils/
-- File system reads/writes, cache handling, and config ingestion.
-
-lichess/
-- Network/API integration and raw game parsing helpers.
-
-utils/
-- Small generic helpers reused across the app.
